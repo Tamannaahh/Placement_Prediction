@@ -1,0 +1,39 @@
+# (Note: 1 = Placed, 0 = Not Placed)
+# RUN First = python model/train_model.py
+# RUN THE APP = python app.py
+# & d:\PPSU\Project\PPSU_Career+\venv\Scripts\Activate.ps1
+
+session management .. 
+
+**--- VIVA NOTES: SESSION COOKIES ---**
+
+**1. WHAT IS A SESSION COOKIE?**
+* It is a temporary digital "ID Card".
+* After login, the server gives this ID to the browser.
+* It proves who the user is so they don't have to type their password on every single page.
+
+**2. TYPES OF COOKIES?**
+* **Session Cookies:** Temporary (deleted the moment the browser closes).
+* **Persistent Cookies:** Saved on the computer (used for "Remember Me" boxes).
+* **Third-Party Cookies:** Used by outside websites (mostly for ads and tracking).
+
+**3. WHERE IS IT STORED IN MY PROJECT?**
+* It is stored **inside the user's browser** (like Chrome or Edge).
+* Flask uses "Client-Side Signed Cookies". 
+* It is securely encrypted using my `app.secret_key = 'ppsu_secret_key'` so students cannot hack the cookie to become an 'admin'.
+
+***
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}">
+
+
+
+
+#selenium Testing --
+# Pip install selenium 
+#    1. python app.py 
+#Folder = tests/selenium_test
+#Run the test 
+#    2. open second terminal = python test/selenium_test.py
+#admin- http://127.0.0.1.5000/admin/prediction/
+

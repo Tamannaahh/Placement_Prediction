@@ -1,0 +1,233 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/resume_form.css') }}">
+
+
+<div id="export-overlay">
+    <div class="robot-core-large">
+        <div class="core-ring-1"></div>
+        <div class="core-ring-2"></div>
+        <div class="core-eye-large"></div>
+        <div class="scanning-laser"></div>
+    </div>
+    <div class="loading-text" id="loading-main-text">COMPILING PDF ENGINE</div>
+    <div class="sub-loading" id="loading-sub-text">Extracting visual themes and stylesheets...</div>
+</div>
+
+<div class="resume-wrapper">
+    <div class="left-panel">
+        <h1 class="title-main">AI Resume Builder</h1>
+        <p class="subtitle">Transform your profile into a professionally tailored document.</p>
+
+        <div class="ai-draft-box">
+            <div class="ai-draft-title">🤖 AI Auto-Draft Content</div>
+            <div style="display: flex; gap: 10px;">
+                <button type="button" class="btn-outline" onclick="autoFill('Software Engineer')">&lt;/&gt; Software Engineer</button>
+                <button type="button" class="btn-outline" onclick="autoFill('Data Scientist')">📊 Data Scientist</button>
+                <button type="button" class="btn-outline" style="color: #ef4444; border-color: #ef4444; margin-left: auto;" onclick="document.getElementById('resumeForm').reset(); updatePreview();">Clear</button>
+            </div>
+        </div>
+
+        <form method="POST" id="resumeForm" onsubmit="generateDynamicPDF(event)">
+            <div class="grid-2">
+                <div class="input-group">
+                    <label>Email</label>
+                    <input type="email" name="email" id="f_email" value="{{ user.email or '' }}" oninput="updatePreview()" required>
+                </div>
+                <div class="input-group">
+                    <label>Phone Number</label>
+                    <input type="text" name="mobile" id="f_phone" value="{{ user.phone or '' }}" oninput="updatePreview()" required>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>Current CGPA</label>
+                <input type="text" name="cgpa" id="f_cgpa" value="{{ user.cgpa or '' }}" oninput="updatePreview()" required>
+            </div>
+
+            <div class="input-group">
+                <label>Core Skills (Comma Separated)</label>
+                <textarea name="skills" id="f_skills" oninput="updatePreview()" required></textarea>
+            </div>
+
+            <div class="input-group">
+                <label>Academic Projects</label>
+                <textarea name="projects" id="f_projects" oninput="updatePreview()" required></textarea>
+            </div>
+
+            <div class="input-group">
+                <label>Experience & Certifications</label>
+                <textarea name="experience" id="f_experience" oninput="updatePreview()" required></textarea>
+            </div>
+
+            <button type="submit" class="btn-primary">
+                <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                Export AI Document
+            </button>
+        </form>
+    </div>
+
+    <div class="right-panel">
+        
+        <div class="ai-status-bar">
+            <div class="ai-robot">
+                <div class="robot-eye-small" id="ai-eye"></div>
+                <div class="robot-text" id="ai-text">SYSTEM READY</div>
+            </div>
+            
+            <div style="display: flex; gap: 8px;">
+                <span style="color: #6b7280; font-size: 12px; margin-right: 5px; line-height: 28px;">Themes:</span>
+                <button class="btn-outline" style="padding: 5px 10px; font-size: 11px;" onclick="changeTheme('theme-classic')">Classic</button>
+                <button class="btn-outline" style="padding: 5px 10px; font-size: 11px; border-color: #10b981; color: #10b981;" onclick="changeTheme('theme-cyber')">Cyber</button>
+                <button class="btn-outline" style="padding: 5px 10px; font-size: 11px; border-color: #f3f4f6; color: #f3f4f6;" onclick="changeTheme('theme-minimal')">Minimal</button>
+            </div>
+        </div>
+
+        <div class="preview-container theme-classic" id="resume-preview">
+            
+            <div class="prev-left">
+                <h4 style="margin: 0 0 15px 0; border-bottom: 1px solid rgba(255,255,255,0.2); padding-bottom: 5px;">CONTACT</h4>
+                <div class="prev-text">
+                    <strong>Phone:</strong><br><span id="p_phone">Phone...</span><br><br>
+                    <strong>Email:</strong><br><span id="p_email">Email...</span><br><br>
+                    <strong>Location:</strong><br>Surat, Gujarat
+                </div>
+
+                <h4 style="margin: 30px 0 15px 0; border-bottom: 1px solid rgba(255,255,255,0.2); padding-bottom: 5px;">EDUCATION</h4>
+                <div class="prev-text">
+                    <strong>{{ user.degree or 'MSc Data Science' }}</strong><br>
+                    P. P. Savani University<br>
+                    CGPA: <span id="p_cgpa">...</span>
+                </div>
+
+                <h4 style="margin: 30px 0 15px 0; border-bottom: 1px solid rgba(255,255,255,0.2); padding-bottom: 5px;">SKILLS</h4>
+                <div class="prev-text" id="p_skills">- Start typing skills...</div>
+            </div>
+
+            <div class="prev-right">
+                <h1 class="prev-name">{{ user.fullname }}</h1>
+                <div class="contact-minimal" id="p_contact_min">Email | Phone | Surat, Gujarat</div>
+                <div class="prev-role">Future {{ user.department }} Professional</div>
+                
+                <div class="prev-text" style="color: #6b7280; font-style: italic;">
+                    Motivated student at P. P. Savani University with a strong foundation in technology. Passionate about leveraging data to solve real-world problems.
+                </div>
+
+                <h4 class="section-title">Academic Projects</h4>
+                <div class="prev-text" id="p_projects">Projects will appear here...</div>
+
+                <h4 class="section-title">Experience & Certifications</h4>
+                <div class="prev-text" id="p_experience">Experience will appear here...</div>
+            </div>
+            
+        </div>
+    </div>
+</div>
+
+<script>
+    // 1. LIVE PREVIEW SYNC
+    function updatePreview() {
+        triggerAI(); // Make the robot blink!
+        
+        document.getElementById('p_email').innerText = document.getElementById('f_email').value || "Email...";
+        document.getElementById('p_phone').innerText = document.getElementById('f_phone').value || "Phone...";
+        document.getElementById('p_cgpa').innerText = document.getElementById('f_cgpa').value || "...";
+        
+        let skills = document.getElementById('f_skills').value;
+        if(skills) {
+            document.getElementById('p_skills').innerHTML = skills.split(',').map(s => `- ${s.trim()}`).join('<br>');
+        } else {
+            document.getElementById('p_skills').innerText = "- Start typing skills...";
+        }
+
+        document.getElementById('p_projects').innerText = document.getElementById('f_projects').value || "Projects will appear here...";
+        document.getElementById('p_experience').innerText = document.getElementById('f_experience').value || "Experience will appear here...";
+
+        let e = document.getElementById('f_email').value || "Email";
+        let p = document.getElementById('f_phone').value || "Phone";
+        document.getElementById('p_contact_min').innerText = `${e} | ${p} | Surat, Gujarat`;
+    }
+
+    // 2. THEME SWITCHER
+    function changeTheme(themeClass) {
+        triggerAI();
+        const preview = document.getElementById('resume-preview');
+        preview.className = 'preview-container ' + themeClass;
+    }
+
+    // 3. AI COMPILER ROBOT ANIMATION (Small)
+    let aiTimeout;
+    function triggerAI() {
+        const eye = document.getElementById('ai-eye');
+        const text = document.getElementById('ai-text');
+        
+        eye.classList.add('processing');
+        text.innerText = "COMPILING DATA...";
+        text.style.color = "#f59e0b";
+
+        clearTimeout(aiTimeout);
+        aiTimeout = setTimeout(() => {
+            eye.classList.remove('processing');
+            text.innerText = "SYSTEM READY";
+            text.style.color = "#9ca3af";
+        }, 800);
+    }
+
+    // 4. AI AUTO-DRAFT CONTENT
+    function autoFill(role) {
+        if(role === 'Software Engineer') {
+            document.getElementById('f_skills').value = "Python, Java, Flask, SQL, Git, REST APIs, HTML/CSS";
+            document.getElementById('f_projects').value = "1. PPSU Placement Portal: Built a full-stack Flask application with SQLite database and session management.\n2. Task Manager: Created a Python-based CLI tool for managing daily student tasks.";
+            document.getElementById('f_experience').value = "1. AWS Academy Graduate (Cloud Foundations)\n2. Web Development Workshop @ PPSU (2025)\n3. Python Programming Certification (Coursera)";
+        } else if (role === 'Data Scientist') {
+            document.getElementById('f_skills').value = "Python, Pandas, NumPy, Scikit-Learn, Machine Learning, Data Visualization, SQL";
+            document.getElementById('f_projects').value = "1. Predictive Placement Model: Developed an ML pipeline using scikit-learn to predict student placement probabilities.\n2. Data Dashboard: Visualized university data using Matplotlib and Seaborn.";
+            document.getElementById('f_experience').value = "1. Data Science Intern @ TechCorp (Summer 2025)\n2. Kaggle Competition Participant (Top 20%)\n3. Advanced Mathematics Certification";
+        }
+        updatePreview();
+    }
+
+    // 5. THE MAGIC EXPORT FUNCTION
+    function generateDynamicPDF(event) {
+        // Prevent normal form submission so we don't get the ugly backend PDF
+        event.preventDefault(); 
+        
+        // Background: Send data to Flask silently so your database still updates!
+        const formData = new FormData(document.getElementById('resumeForm'));
+        fetch('/build_resume', { method: 'POST', body: formData }).catch(e => console.log(e));
+
+        // UI: Show the massive full-screen robot loading overlay
+        const overlay = document.getElementById('export-overlay');
+        const subText = document.getElementById('loading-sub-text');
+        overlay.style.display = 'flex';
+        
+        // Fake loading phases for the WOW factor
+        setTimeout(() => { subText.innerText = "Injecting Dynamic CSS Styles..."; }, 1000);
+        setTimeout(() => { subText.innerText = "Finalizing PDF Document..."; }, 2000);
+
+        // Actual PDF Generation (Takes a picture of the right panel)
+        setTimeout(() => {
+            const element = document.getElementById('resume-preview');
+            const opt = {
+                margin:       0,
+                filename:     'PPSU_Career_Resume.pdf',
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2 }, // High-res scale
+                jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+            };
+
+            // Magic happens here
+            html2pdf().set(opt).from(element).save().then(() => {
+                // Hide overlay when finished downloading
+                overlay.style.display = 'none';
+                subText.innerText = "Extracting visual themes and stylesheets...";
+            });
+        }, 3000); // Wait 3 seconds to let professor see the animation
+    }
+
+    window.onload = updatePreview;
+</script>
+{% endblock %}

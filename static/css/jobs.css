@@ -1,0 +1,61 @@
+
+    /* GLOBAL DARK OVERRIDES */
+    body { background-color: #0b0f19 !important; font-family: 'Poppins', sans-serif; color: #e5e7eb; }
+    .job-header { padding: 20px 0; margin-bottom: 20px; }
+    
+    /* JOB CARDS */
+    .job-card { 
+        background: #121826; border-radius: 16px; border: 1px solid #1f2937; padding: 25px; 
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); height: 100%; box-shadow: 0 10px 30px rgba(0,0,0,0.3); 
+    }
+    .job-card:hover { transform: translateY(-5px); box-shadow: 0 15px 30px rgba(0,0,0,0.5), inset 0 0 15px rgba(99,102,241,0.05); border-color: #6366f1; }
+    
+    /* BADGES & LOGOS */
+    .badge-type { background: rgba(99, 102, 241, 0.1); color: #818cf8; font-weight: 600; padding: 6px 12px; border-radius: 20px; font-size: 0.8rem; border: 1px solid rgba(99, 102, 241, 0.3); }
+    .company-logo { background: #1f2937 !important; border-color: #374151 !important; color: #e5e7eb !important; box-shadow: inset 0 2px 4px rgba(0,0,0,0.3); }
+    
+    /* LINKS & BUTTONS */
+    .btn-view { color: #818cf8; font-weight: 600; text-decoration: none; transition: 0.2s; padding: 8px 15px; border-radius: 8px; border: 1px solid transparent; }
+    .btn-view:hover { color: #a5b4fc; background: rgba(99, 102, 241, 0.1); border-color: #6366f1; letter-spacing: 0.5px; }
+    
+    .btn-load-more { background: transparent; color: #a5b4fc; border: 2px solid #4f46e5; border-radius: 30px; font-weight: 600; padding: 12px 35px; transition: 0.3s; box-shadow: 0 4px 15px rgba(99, 102, 241, 0.2); }
+    .btn-load-more:hover { background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); color: white; transform: translateY(-2px); box-shadow: 0 10px 25px rgba(99, 102, 241, 0.5); border-color: transparent;}
+    
+    /* OVERRIDE UTILITIES */
+    .text-dark { color: #ffffff !important; }
+    .text-muted { color: #9ca3af !important; }
+    .bg-primary-gradient { background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%) !important; box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4); }
+
+    /* ========================================= */
+    /* UNIQUE AI RADAR LOADER FOR JOBFIT ENGINE  */
+    /* ========================================= */
+    #global-loader {
+        position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+        background: rgba(5, 8, 17, 0.95); backdrop-filter: blur(10px);
+        z-index: 9999; display: none; flex-direction: column; align-items: center; justify-content: center;
+    }
+    .radar-container {
+        width: 120px; height: 120px; border-radius: 50%; border: 2px solid #374151; position: relative; overflow: hidden;
+        background: radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, transparent 70%); margin-bottom: 25px;
+        box-shadow: 0 0 30px rgba(99,102,241,0.2), inset 0 0 20px rgba(99,102,241,0.2);
+    }
+    /* Grid lines inside radar */
+    .radar-container::after { content: ''; position: absolute; top: 50%; left: 0; width: 100%; height: 1px; background: rgba(99,102,241,0.3); }
+    .radar-container::before { content: ''; position: absolute; top: 0; left: 50%; width: 1px; height: 100%; background: rgba(99,102,241,0.3); z-index: 2; }
+    
+    .radar-sweep {
+        position: absolute; top: 50%; left: 50%; width: 60px; height: 60px;
+        background: conic-gradient(from 0deg, transparent 70%, rgba(99, 102, 241, 0.9) 100%);
+        transform-origin: 0% 0%; animation: radar-spin 1.5s linear infinite; z-index: 3;
+    }
+    
+    /* Blinking blips on radar */
+    .radar-blip { position: absolute; width: 6px; height: 6px; background: #10b981; border-radius: 50%; box-shadow: 0 0 10px #10b981; z-index: 4; animation: blip-blink 1.5s infinite; }
+    .blip-1 { top: 30%; left: 60%; animation-delay: 0.2s; }
+    .blip-2 { top: 70%; left: 30%; animation-delay: 0.8s; }
+
+    .loader-text { color: #818cf8; font-family: monospace; font-size: 16px; letter-spacing: 3px; animation: pulse 1.5s infinite; }
+
+    @keyframes radar-spin { 100% { transform: rotate(360deg); } }
+    @keyframes blip-blink { 0%, 100% { opacity: 0; } 50% { opacity: 1; } }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }

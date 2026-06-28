@@ -1,0 +1,86 @@
+
+    /* MAIN LAYOUT */
+    .trainer-wrapper { display: flex; height: calc(100vh - 80px); background-color: #0b0f19; border-radius: 12px; overflow: hidden; border: 1px solid #1f2937; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); }
+    .left-panel { flex: 1.2; padding: 40px; overflow-y: auto; border-right: 1px solid #1f2937; background-color: #0f1523; }
+    .right-panel { flex: 1; background-color: #050811; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; overflow: hidden; }
+
+    /* TYPOGRAPHY & BUTTONS */
+    .title-main { font-size: 32px; font-weight: 800; line-height: 1.2; margin-bottom: 20px; color: #ffffff !important; }
+    .btn-primary { background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); color: white; padding: 14px 28px; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; transition: all 0.3s ease; }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgba(99, 102, 241, 0.5); }
+    
+    .btn-mic { background: #ef4444; color: white; padding: 15px; border: none; border-radius: 50%; width: 60px; height: 60px; font-size: 24px; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 20px rgba(239, 68, 68, 0.5); transition: 0.2s; margin: 0 auto;}
+    .btn-mic:active { transform: scale(0.9); background: #dc2626; }
+    .recording-pulse { animation: mic-pulse 1.5s infinite; }
+
+    /* CUSTOM RADIO OPTIONS */
+    .option-label { display: block; background-color: #1f2937; padding: 18px 20px; margin-bottom: 12px; border-radius: 10px; cursor: pointer; border: 2px solid transparent; color: #e5e7eb !important; transition: 0.2s; font-size: 15px;}
+    .option-label:hover { background-color: #273346; border-color: #4f46e5; }
+    input[type="radio"] { transform: scale(1.2); margin-right: 15px; accent-color: #6366f1; }
+    textarea { width: 100%; background: #1f2937 !important; border: 1px solid #4b5563 !important; color: #ffffff !important; padding: 15px; border-radius: 8px; font-family: inherit; font-size: 15px; resize: vertical; min-height: 120px; margin-bottom: 20px;}
+
+    /* THE 3D PHYSICS ATOM AI CORE */
+    .atom-container { position: relative; width: 300px; height: 300px; perspective: 1000px; }
+    .nucleus { position: absolute; top: 50%; left: 50%; width: 70px; height: 70px; background: radial-gradient(circle, #a5b4fc, #4f46e5); border-radius: 50%; transform: translate(-50%, -50%); box-shadow: 0 0 50px #6366f1, 0 0 100px #4f46e5; animation: core-pulse 2s infinite alternate; z-index: 10; }
+    
+    .electron-orbit { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border-radius: 50%; border: 2px solid rgba(99, 102, 241, 0.3); transform-style: preserve-3d; }
+    .orbit-1 { animation: spin-1 8s linear infinite; transform: rotateX(65deg) rotateY(0deg); }
+    .orbit-2 { animation: spin-2 8s linear infinite; transform: rotateX(65deg) rotateY(60deg); }
+    .orbit-3 { animation: spin-3 8s linear infinite; transform: rotateX(65deg) rotateY(120deg); }
+    
+    .electron { position: absolute; top: -6px; left: 50%; width: 12px; height: 12px; background: #fff; border-radius: 50%; box-shadow: 0 0 15px #fff, 0 0 30px #a5b4fc; transform: translateX(-50%); }
+    
+    /* SOUNDWAVE VISUALIZER */
+    .sound-waves { display: flex; gap: 5px; height: 40px; align-items: center; justify-content: center; margin-top: 40px; opacity: 0; transition: opacity 0.3s; }
+    .sound-waves.active { opacity: 1; }
+    .bar { width: 6px; background: #6366f1; border-radius: 3px; animation: wave 1s infinite ease-in-out; }
+    .bar:nth-child(1) { height: 10px; animation-delay: 0.0s; } .bar:nth-child(2) { height: 25px; animation-delay: 0.1s; } .bar:nth-child(3) { height: 40px; animation-delay: 0.2s; } .bar:nth-child(4) { height: 25px; animation-delay: 0.3s; } .bar:nth-child(5) { height: 10px; animation-delay: 0.4s; }
+
+    .ai-status-text { margin-top: 30px; font-family: monospace; color: #818cf8; letter-spacing: 2px; text-transform: uppercase; }
+
+    /* ANIMATIONS */
+    @keyframes core-pulse { 0% { transform: translate(-50%, -50%) scale(0.9); box-shadow: 0 0 30px #6366f1; } 100% { transform: translate(-50%, -50%) scale(1.1); box-shadow: 0 0 70px #a5b4fc; } }
+    @keyframes spin-1 { 0% { transform: rotateX(65deg) rotateY(0deg) rotateZ(0deg); } 100% { transform: rotateX(65deg) rotateY(0deg) rotateZ(360deg); } }
+    @keyframes spin-2 { 0% { transform: rotateX(65deg) rotateY(60deg) rotateZ(0deg); } 100% { transform: rotateX(65deg) rotateY(60deg) rotateZ(360deg); } }
+    @keyframes spin-3 { 0% { transform: rotateX(65deg) rotateY(120deg) rotateZ(0deg); } 100% { transform: rotateX(65deg) rotateY(120deg) rotateZ(360deg); } }
+    @keyframes wave { 0%, 100% { transform: scaleY(0.5); } 50% { transform: scaleY(1.5); } }
+    @keyframes mic-pulse { 0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); } 70% { box-shadow: 0 0 0 20px rgba(239, 68, 68, 0); } 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); } }
+
+/* --- PRO VIDEO BUTTON STYLES --- */
+.btn-pro-video {
+    padding: 20px; 
+    font-size: 18px; 
+    text-align: left; 
+    background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); 
+    position: relative; 
+    overflow: hidden; 
+    border: 1px solid #818cf8;
+    color: white;
+    border-radius: 8px;
+    cursor: pointer;
+    width: 100%;
+    transition: 0.3s;
+    box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+}
+
+.btn-pro-video:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(99, 102, 241, 0.6);
+}
+
+.btn-pro-video .pro-badge {
+    position: absolute; 
+    top: 15px; 
+    right: 20px; 
+    background: rgba(0,0,0,0.3); 
+    font-size: 11px; 
+    padding: 4px 10px; 
+    border-radius: 12px; 
+    border: 1px solid rgba(255,255,255,0.2);
+}
+
+.btn-pro-video span {
+    font-size: 13px; 
+    font-weight: normal; 
+    color: #e0e7ff;
+}

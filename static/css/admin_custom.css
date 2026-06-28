@@ -1,0 +1,48 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+/* static/css/admin_custom.css */
+
+/* 1. Navy Blue Top Bar */
+.navbar {
+    background-color: #1a2c5b !important;
+    border-bottom: 3px solid #d4af37 !important;
+}
+
+.navbar-brand {
+    color: #fff !important;
+    font-weight: bold;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.navbar-nav > li > a {
+    color: rgba(255,255,255,0.9) !important;
+}
+
+.navbar-nav > li > a:hover {
+    color: #d4af37 !important;
+}
+
+/* 2. Navy Blue Table Headers */
+th {
+    background-color: #1a2c5b !important;
+    color: #ffffff !important;
+    border: none !important;
+    font-size: 14px;
+    padding: 12px !important;
+}
+
+/* 3. Buttons */
+.btn-primary {
+    background-color: #1a2c5b !important;
+    border-color: #1a2c5b !important;
+}
+
+.btn-primary:hover {
+    background-color: #0f1e45 !important;
+}
+
+/* 4. Page Header */
+.page-header {
+    border-bottom: 2px solid #d4af37 !important;
+    color: #1a2c5b;
+}

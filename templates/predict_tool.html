@@ -1,0 +1,149 @@
+{% extends "base.html" %}
+{% block content %}
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/predict_tool.css') }}">
+
+
+<div class="container py-4">
+    <div class="text-center mb-4">
+        <h2 class="fw-bold" style="color: #1a2c5b;"><i class="fas fa-brain me-2" style="color: #d4af37;"></i> Advanced Placement Predictor</h2>
+        <p class="text-muted">Fill out the comprehensive evaluation form to generate your success matrix.</p>
+    </div>
+
+    <div class="ai-dashboard-card">
+        
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} fw-bold"><i class="fas fa-exclamation-triangle me-2"></i> {{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        {% if prediction_text %}
+            <div class="result-box result-{{ result_class }} mb-5 shadow-sm">
+                <h3 class="fw-bold mb-2">Analysis Complete <i class="fas fa-chart-pie ms-2"></i></h3>
+                <p class="fs-5 mb-0">{{ prediction_text }}</p>
+                <div class="mt-2 small opacity-75">This prediction has been saved to your student profile database.</div>
+            </div>
+        {% endif %}
+
+        <form action="/predict" method="POST" enctype="multipart/form-data">
+            <div class="row g-5">
+                
+                <div class="col-lg-5">
+                    <h4 class="section-title"><i class="fas fa-building me-2"></i> 1. Target Corporation</h4>
+                    <div class="mb-3">
+                        <label class="form-label">Select Company to Query API</label>
+                        <select class="form-select" name="target_company" id="companySelect" onchange="fetchCompanyAPI()" required>
+                            <option value="" selected disabled>-- Select Company --</option>
+                            <option value="TCS">Tata Consultancy Services (TCS)</option>
+                            <option value="Infosys">Infosys</option>
+                            <option value="Amazon">Amazon</option>
+                            <option value="L&T">Larsen & Toubro (L&T)</option>
+                        </select>
+                    </div>
+
+                    <div class="api-card mb-5" id="apiTerminal">
+                        > SYSTEM STANDBY.<br>
+                        > AWAITING COMPANY SELECTION TO FETCH LIVE ATS REQUIREMENTS...
+                    </div>
+
+                    <h4 class="section-title"><i class="fas fa-file-upload me-2"></i> 2. Mandatory Documents</h4>
+                    
+                    <div class="file-dropzone" id="dropzone1">
+                        <input type="file" name="marksheet_10" onchange="showFile(this, 'icon1', 'text1')" required>
+                        <i class="fas fa-file-alt" id="icon1"></i>
+                        <p class="mb-0 fw-bold text-dark" id="text1">10th / 12th Marksheet <span class="text-danger">*</span></p>
+                    </div>
+
+                    <div class="file-dropzone" id="dropzone2">
+                        <input type="file" name="marksheet_sem" onchange="showFile(this, 'icon2', 'text2')" required>
+                        <i class="fas fa-graduation-cap" id="icon2"></i>
+                        <p class="mb-0 fw-bold text-dark" id="text2">Latest Sem Marksheet <span class="text-danger">*</span></p>
+                    </div>
+
+                    <div class="file-dropzone">
+                        <input type="file" name="certificate" onchange="showFile(this, 'icon3', 'text3')">
+                        <i class="fas fa-certificate" id="icon3"></i>
+                        <p class="mb-0 fw-bold text-dark" id="text3">Additional Certificates (Optional)</p>
+                    </div>
+                </div>
+
+                <div class="col-lg-7">
+                    <h4 class="section-title"><i class="fas fa-chart-line me-2"></i> 3. Comprehensive Academic & Skill Metrics</h4>
+                    
+                    <div class="row g-3">
+                        <div class="col-md-6"><label class="form-label">CGPA (0-10) <span class="text-danger">*</span></label><input type="number" step="0.01" class="form-control" name="cgpa" required></div>
+                        <div class="col-md-6"><label class="form-label">12th/Diploma % <span class="text-danger">*</span></label><input type="number" step="0.01" class="form-control" name="diploma" required></div>
+                        <div class="col-md-6"><label class="form-label">Active Backlogs <span class="text-danger">*</span></label><input type="number" class="form-control" name="backlogs" value="0" required></div>
+                        <div class="col-md-6"><label class="form-label">Internships Done <span class="text-danger">*</span></label><input type="number" class="form-control" name="internships" required></div>
+                        
+                        <div class="col-md-6">
+                            <label class="form-label">Primary Language <span class="text-danger">*</span></label>
+                            <select class="form-select" name="language" required>
+                                <option value="Python">Python</option>
+                                <option value="Java">Java</option>
+                                <option value="C++">C / C++</option>
+                                <option value="JS">JavaScript / MERN</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6"><label class="form-label">Hackathons Attended <span class="text-danger">*</span></label><input type="number" class="form-control" name="hackathons" value="0" required></div>
+                        <div class="col-md-12"><label class="form-label">GitHub / Portfolio Link</label><input type="url" class="form-control" name="github" placeholder="https://github.com/username"></div>
+
+                        <div class="col-md-6"><label class="form-label">Aptitude Score (0-100) <span class="text-danger">*</span></label><input type="number" class="form-control" name="aptitude" required></div>
+                        <div class="col-md-6"><label class="form-label">Technical Skill (1-10) <span class="text-danger">*</span></label><input type="number" class="form-control" name="technical" required></div>
+                    </div>
+
+                    <button type="submit" class="btn btn-predict mt-4">
+                        <i class="fas fa-microchip me-2"></i> Execute Prediction & Save to Database
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    // 1. Fetch Real API Data when company is selected
+    async function fetchCompanyAPI() {
+        const company = document.getElementById("companySelect").value;
+        const terminal = document.getElementById("apiTerminal");
+        
+        terminal.innerHTML = "> FETCHING LIVE REQUIREMENTS FROM " + company + " SERVERS...<br>";
+        
+        try {
+            // Ping our new Flask API route
+            const response = await fetch(`/api/get_requirements?company=${company}`);
+            const data = await response.json();
+            
+            // Display the data like a terminal
+            setTimeout(() => {
+                terminal.innerHTML = `
+                    <div style="color: #fff;">> CONNECTION ESTABLISHED: 200 OK</div>
+                    <div style="color: #d4af37; margin-top: 10px;">[TARGET ROLE]: ${data.role}</div>
+                    <div>[MIN CGPA]: ${data.min_cgpa}</div>
+                    <div>[KEY SKILLS]: ${data.skills}</div>
+                    <div style="color: #ffc107; margin-top: 5px;">[HIRING PROCESS]: ${data.process}</div>
+                `;
+            }, 500); // Small delay for visual effect
+        } catch (error) {
+            terminal.innerHTML = "> ERROR: UNABLE TO CONNECT TO ATS SERVER.";
+        }
+    }
+
+    // 2. Change file icon to green checkmark when uploaded
+    function showFile(input, iconId, textId) {
+        if (input.files && input.files[0]) {
+            let fileName = input.files[0].name;
+            let icon = document.getElementById(iconId);
+            icon.className = "fas fa-check-circle";
+            icon.style.color = "#28a745"; 
+            let text = document.getElementById(textId);
+            text.innerText = fileName;
+            text.style.color = "#28a745";
+        }
+    }
+</script>
+
+{% endblock %}

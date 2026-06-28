@@ -1,0 +1,127 @@
+/* static/css/auth.css */
+
+.auth-page-bg {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* Rich, dark premium corporate gradient */
+    background: radial-gradient(circle at top left, #1a2c5b 0%, #050a14 100%);
+    padding: 40px 20px;
+    font-family: 'Poppins', sans-serif;
+}
+
+.auth-glass-card {
+    background: #ffffff;
+    border-radius: 20px;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+    width: 100%;
+    max-width: 450px;
+    overflow: hidden;
+    transform: translateY(0);
+    transition: all 0.4s ease;
+}
+
+.auth-glass-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6);
+}
+
+.auth-header {
+    background: #ffffff;
+    padding: 40px 30px 20px 30px;
+    text-align: center;
+    border-bottom: 2px solid #f4f8fd;
+}
+
+.auth-header h3 {
+    color: #1a2c5b;
+    font-weight: 700;
+    margin-top: 15px;
+}
+
+.auth-body {
+    padding: 30px 40px 40px 40px;
+}
+
+/* Input Fields */
+.auth-input-group {
+    position: relative;
+    margin-bottom: 25px;
+}
+
+.auth-input-group label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #6c757d;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+    display: block;
+}
+
+.auth-input-wrapper {
+    display: flex;
+    align-items: center;
+    background: #f8f9fa;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+}
+
+.auth-input-wrapper:focus-within {
+    border-color: #d4af37;
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.15);
+}
+
+.auth-icon {
+    padding: 15px;
+    color: #a0aec0;
+    transition: 0.3s;
+}
+
+.auth-input-wrapper:focus-within .auth-icon {
+    color: #d4af37;
+}
+
+.auth-input {
+    border: none;
+    background: transparent;
+    width: 100%;
+    padding: 15px 15px 15px 0;
+    outline: none;
+    color: #1a2c5b;
+    font-weight: 500;
+}
+
+/* Button */
+.auth-btn-primary {
+    background: #1a2c5b;
+    color: white;
+    width: 100%;
+    padding: 15px;
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    transition: all 0.3s ease;
+    margin-top: 10px;
+}
+
+.auth-btn-primary:hover {
+    background: #d4af37;
+    color: #1a2c5b;
+    box-shadow: 0 10px 20px rgba(212, 175, 55, 0.3);
+}
+
+.password-toggle {
+    cursor: pointer;
+    padding: 15px;
+    color: #a0aec0;
+}
+
+.password-toggle:hover {
+    color: #1a2c5b;
+}

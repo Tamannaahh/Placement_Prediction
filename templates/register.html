@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block content %}
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/register.css') }}">
+
+
+<div class="auth-page-bg">
+    <div class="auth-glass-card">
+        
+        <div class="auth-header">
+            <div style="width: 80px; height: 80px; background: rgba(99, 102, 241, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto; border: 1px solid rgba(99,102,241,0.2); box-shadow: 0 0 20px rgba(99,102,241,0.2);">
+                <i class="fas fa-user-shield fa-2x" style="color: #818cf8;"></i>
+            </div>
+            <h3>Create Account</h3>
+            <p class="text-muted small">Join the PPSU Recruitment Ecosystem</p>
+        </div>
+
+        <div class="auth-body">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+              {% if messages %}
+                {% for category, message in messages %}
+                  <div class="alert alert-{{ category }} alert-dismissible fade show py-2 small" style="background: rgba(239, 68, 68, 0.1); border: 1px solid #ef4444; color: #fca5a5;" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close btn-close-white" style="padding: 10px;" data-bs-dismiss="alert"></button>
+                  </div>
+                {% endfor %}
+              {% endif %}
+            {% endwith %}
+
+            <form action="/register" method="POST">
+                
+                <div class="auth-input-group">
+                    <label>Choose Username</label>
+                    <div class="auth-input-wrapper">
+                        <input type="text" name="username" class="auth-input" placeholder="e.g. tamanna123" required>
+                        <i class="fas fa-id-badge auth-icon"></i>
+                    </div>
+                </div>
+
+                <div class="auth-input-group" style="margin-bottom: 8px;">
+                    <label>Create Password</label>
+                    <div class="auth-input-wrapper">
+                        <input type="password" name="password" id="regPassword" class="auth-input" placeholder="Create a strong password" 
+                               pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*]).{8,}" 
+                               title="Must contain at least one number, one uppercase and lowercase letter, one special character, and be at least 8 characters long" required>
+                        <i class="fas fa-lock auth-icon"></i>
+                    </div>
+                </div>
+                
+                <div class="text-muted mb-4 px-1" style="font-size: 11px; line-height: 1.5; color: #6b7280 !important;">
+                    <i class="fas fa-info-circle me-1" style="color: #818cf8;"></i> Requires 8+ chars, 1 uppercase, 1 number, & 1 special symbol (!@#$%).
+                </div>
+
+                <button type="submit" class="auth-btn-primary">Secure Registration <i class="fas fa-arrow-right ms-2"></i></button>
+            </form>
+
+            <div class="text-center mt-4">
+                <p class="text-muted small mb-0">Already have an account? 
+                    <a href="/login" class="fw-bold auth-link">Sign In</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

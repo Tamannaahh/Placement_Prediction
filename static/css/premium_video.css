@@ -1,0 +1,69 @@
+/* PREMIUM IMMERSIVE HUD OVERRIDES */
+    /* FIXED: Removed overflow: hidden so you can ALWAYS scroll if needed! */
+    body { background-color: #03050a !important; color: #e5e7eb; overflow-x: hidden; }
+    .navbar { display: none !important; }
+    #main-content { padding-top: 0 !important; }
+
+    .premium-header { display: flex; justify-content: space-between; align-items: center; padding: 20px 40px; background: rgba(5, 8, 17, 0.9); border-bottom: 1px solid #1f2937; }
+    .live-badge { background: rgba(239, 68, 68, 0.15); color: #ef4444; border: 1px solid #ef4444; padding: 5px 15px; border-radius: 20px; font-weight: bold; font-size: 12px; animation: pulse-red 2s infinite; letter-spacing: 2px; }
+
+    .cockpit-container { padding: 20px 40px; min-height: calc(100vh - 80px); display: flex; gap: 20px; filter: blur(10px); transition: filter 0.5s ease; pointer-events: none; padding-bottom: 40px; }
+    .cockpit-container.active { filter: blur(0px); pointer-events: all; }
+
+    /* LEFT: CAMERA FEED */
+    .camera-section { flex: 1.5; background: #0b0f19; border-radius: 20px; border: 1px solid #1f2937; position: relative; overflow: hidden; box-shadow: 0 0 50px rgba(0,0,0,0.5); display: flex; flex-direction: column; }
+    .video-wrapper { flex-grow: 1; position: relative; overflow: hidden; min-height: 400px; }
+    #user-webcam { width: 100%; height: 100%; object-fit: cover; filter: contrast(1.1) brightness(1.1); transform: scaleX(-1); }
+    .overlay-grid { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(rgba(16, 185, 129, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(16, 185, 129, 0.05) 1px, transparent 1px); background-size: 40px 40px; pointer-events: none; }
+    .face-box { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 280px; height: 320px; border: 2px solid rgba(16, 185, 129, 0.8); border-radius: 20px; box-shadow: 0 0 30px rgba(16, 185, 129, 0.2), inset 0 0 20px rgba(16, 185, 129, 0.2); display: none; }
+    .face-box::before, .face-box::after { content: ''; position: absolute; width: 40px; height: 40px; border: 3px solid #10b981; }
+    .face-box::before { top: -3px; left: -3px; border-right: none; border-bottom: none; border-radius: 20px 0 0 0; }
+    .face-box::after { bottom: -3px; right: -3px; border-left: none; border-top: none; border-radius: 0 0 20px 0; }
+    .scan-line { position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: #10b981; box-shadow: 0 0 20px #10b981, 0 0 40px #10b981; animation: scan 3s linear infinite; opacity: 0.7; }
+    
+    .mini-metrics { display: flex; background: #050811; border-top: 1px solid #1f2937; padding: 15px; justify-content: space-around; }
+    .metric-item { text-align: center; }
+    .metric-title { font-size: 10px; color: #9ca3af; text-transform: uppercase; letter-spacing: 1px; }
+    .metric-val { font-size: 20px; font-weight: bold; font-family: monospace; }
+
+    /* RIGHT: INTERVIEW CONSOLE */
+    .data-section { flex: 1; display: flex; flex-direction: column; gap: 15px; }
+    .chat-card { background: #0b0f19; border: 1px solid #1f2937; border-radius: 16px; padding: 20px; flex-grow: 1; display: flex; flex-direction: column; border-left: 4px solid #3b82f6; }
+    .data-title { font-size: 11px; text-transform: uppercase; letter-spacing: 2px; color: #9ca3af; margin-bottom: 15px; display: flex; justify-content: space-between; }
+    
+    /* FIXED: Locked the height of the chat to 350px so it NEVER pushes the button off screen! */
+    .interview-chat { background: #050811; border: 1px solid #1f2937; border-radius: 12px; padding: 15px; height: 350px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; margin-bottom: 15px; scroll-behavior: smooth; }
+    
+    .bubble { max-width: 85%; padding: 12px 15px; border-radius: 12px; font-size: 14px; line-height: 1.5; }
+    .bubble.ai { background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.3); color: #e0e7ff; align-self: flex-start; border-bottom-left-radius: 2px; }
+    .bubble.user { background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); color: #a7f3d0; align-self: flex-end; border-bottom-right-radius: 2px; }
+    
+    /* Action Buttons */
+    .btn-action { color: white; border: none; padding: 15px; border-radius: 12px; font-weight: bold; font-size: 16px; width: 100%; transition: 0.2s; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 10px; flex-shrink: 0; }
+    .btn-action.mic { background: linear-gradient(135deg, #3b82f6, #2563eb); }
+    .btn-action.mic:hover { background: #2563eb; }
+    .btn-action.mic.listening { background: #ef4444 !important; animation: pulse-red 1.5s infinite; }
+    
+    /* New Report Button */
+    .btn-action.report { background: linear-gradient(135deg, #10b981, #059669); display: none; box-shadow: 0 0 15px rgba(16, 185, 129, 0.4); }
+    .btn-action.report:hover { transform: translateY(-2px); box-shadow: 0 0 25px rgba(16, 185, 129, 0.6); }
+
+    .btn-end { background: transparent; border: 1px solid #ef4444; color: #ef4444; padding: 12px; border-radius: 12px; font-weight: bold; width: 100%; transition: 0.3s; letter-spacing: 1px; text-align: center; text-decoration: none; display: block; flex-shrink: 0; }
+    .btn-end:hover { background: rgba(239, 68, 68, 0.1); }
+
+    @keyframes pulse-red { 0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); } 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); } }
+    @keyframes scan { 0% { top: 0; opacity: 0; } 10% { opacity: 1; } 90% { opacity: 1; } 100% { top: 100%; opacity: 0; } }
+
+    /* ONBOARDING OVERLAY */
+    .onboarding-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; background: rgba(3, 5, 10, 0.85); display: flex; justify-content: center; align-items: center; z-index: 9999; }
+    .setup-modal { background: #ffffff; width: 450px; border-radius: 20px; padding: 40px; box-shadow: 0 25px 50px rgba(0,0,0,0.5); text-align: center; position: relative; color: #111827; }
+    .mini-progress { width: 100%; height: 6px; background: #e5e7eb; border-radius: 10px; margin-bottom: 30px; overflow: hidden; }
+    .mini-progress-fill { height: 100%; background: #3b82f6; width: 50%; transition: 0.5s; }
+    .setup-modal h2 { font-weight: 800; font-size: 26px; margin-bottom: 10px; color: #1f2937; }
+    .setup-modal p { color: #6b7280; font-size: 15px; margin-bottom: 30px; }
+    .input-group { text-align: left; margin-bottom: 30px; }
+    .input-group label { display: block; font-weight: 600; font-size: 13px; color: #374151; margin-bottom: 8px; }
+    .input-group select { width: 100%; padding: 15px; border: 2px solid #e5e7eb; border-radius: 10px; font-size: 15px; background: white; cursor: pointer; outline: none; transition: 0.3s; font-family: 'Poppins', sans-serif; }
+    .input-group select:focus { border-color: #3b82f6; }
+    .btn-blue { background: #3b82f6; color: white; border: none; padding: 15px; border-radius: 12px; font-weight: bold; font-size: 16px; width: 100%; transition: 0.3s; cursor: pointer; }
+    .btn-blue:hover { background: #2563eb; transform: translateY(-2px); }

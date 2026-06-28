@@ -1,0 +1,84 @@
+
+    /* OVERRIDE AUTH.CSS FOR GLOBAL DARK THEME */
+    body, html { background-color: #0b0f19 !important; }
+
+    .auth-page-bg {
+        min-height: calc(100vh - 80px);
+        background-color: #0b0f19;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 40px 20px;
+        background-image: radial-gradient(circle at 50% 0%, rgba(99, 102, 241, 0.15), transparent 50%);
+    }
+
+    .auth-glass-card {
+        background: #121826;
+        border: 1px solid #1f2937;
+        border-radius: 16px;
+        padding: 40px;
+        width: 100%;
+        max-width: 450px;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 20px rgba(99,102,241,0.05) inset;
+        position: relative;
+        overflow: hidden;
+    }
+
+    /* Subtle glow at the top of the card */
+    .auth-glass-card::before {
+        content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 4px;
+        background: linear-gradient(90deg, #6366f1, #a5b4fc, #6366f1);
+    }
+
+    .auth-header { text-align: center; margin-bottom: 30px; }
+    .auth-header h3 { color: #ffffff; font-weight: 800; margin-top: 20px; font-size: 28px; letter-spacing: -0.5px;}
+    .text-muted { color: #9ca3af !important; }
+
+    /* INPUT STYLING */
+    .auth-input-group { margin-bottom: 20px; text-align: left; }
+    .auth-input-group label { color: #d1d5db; font-size: 13px; font-weight: bold; margin-bottom: 8px; display: block; }
+    
+    .auth-input-wrapper { position: relative; display: flex; align-items: center; }
+    .auth-icon { position: absolute; left: 16px; color: #6b7280; font-size: 16px; transition: 0.3s; }
+    .password-toggle { position: absolute; right: 16px; color: #6b7280; cursor: pointer; transition: 0.3s; }
+    .password-toggle:hover { color: #818cf8; }
+    
+    .auth-input {
+        width: 100%;
+        background: #1f2937;
+        border: 1px solid #374151;
+        color: #ffffff;
+        padding: 14px 45px 14px 45px; /* Extra padding on right for the eye icon */
+        border-radius: 10px;
+        font-size: 15px;
+        transition: all 0.3s ease;
+    }
+    
+    .auth-input:focus { outline: none; border-color: #6366f1; box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15); background: #111827; }
+    .auth-input:focus ~ .auth-icon { color: #6366f1; }
+
+    /* CHECKBOX STYLING */
+    .form-check-input { background-color: #1f2937; border-color: #374151; cursor: pointer; }
+    .form-check-input:checked { background-color: #6366f1; border-color: #6366f1; }
+    .form-check-label { cursor: pointer; }
+
+    /* BUTTON STYLING */
+    .auth-btn-primary {
+        background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+        color: white;
+        padding: 15px 24px;
+        border: none;
+        border-radius: 10px;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+        width: 100%;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+        margin-top: 10px;
+    }
+    .auth-btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(99, 102, 241, 0.6); }
+
+    /* LINK STYLING */
+    .auth-link { color: #818cf8; text-decoration: none; transition: 0.2s; }
+    .auth-link:hover { color: #a5b4fc; text-decoration: underline; }

@@ -1,0 +1,22 @@
+
+    body { background-color: #f4f8fd; font-family: 'Poppins', sans-serif; }
+    .ai-dashboard-card { background: #ffffff; border-radius: 20px; box-shadow: 0 15px 40px rgba(26, 44, 91, 0.08); padding: 40px; margin-top: 20px; border-top: 5px solid #1a2c5b; }
+    .section-title { color: #1a2c5b; font-weight: 700; font-size: 1.2rem; margin-bottom: 20px; border-bottom: 2px solid #f0f0f0; padding-bottom: 10px; }
+    .form-label { font-size: 0.85rem; font-weight: 600; color: #6c757d; text-transform: uppercase; letter-spacing: 0.5px; }
+    .form-control, .form-select { background-color: #f8f9fa; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px; transition: all 0.3s; }
+    .form-control:focus, .form-select:focus { border-color: #d4af37; box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.15); background-color: #fff; }
+
+    /* Interactive Dropzones */
+    .file-dropzone { border: 2px dashed #cbd5e1; border-radius: 12px; padding: 20px; text-align: center; background: #f8fafc; transition: all 0.3s ease; position: relative; margin-bottom: 15px; cursor: pointer; }
+    .file-dropzone:hover { border-color: #1a2c5b; background: #f1f5f9; }
+    .file-dropzone input[type="file"] { position: absolute; width: 100%; height: 100%; top: 0; left: 0; opacity: 0; cursor: pointer; }
+    .file-dropzone i { font-size: 1.5rem; color: #94a3b8; margin-bottom: 8px; transition: 0.3s; }
+    
+    .btn-predict { background: linear-gradient(135deg, #1a2c5b 0%, #0a1122 100%); color: white; padding: 15px 30px; border-radius: 10px; font-weight: 600; letter-spacing: 1px; border: none; width: 100%; transition: all 0.3s; text-transform: uppercase; }
+    .btn-predict:hover { background: #d4af37; color: #1a2c5b; transform: translateY(-2px); box-shadow: 0 10px 20px rgba(212, 175, 55, 0.3); }
+
+    /* API Data Box */
+    .api-card { background: #0a1122; color: #00ff41; border-radius: 12px; padding: 20px; text-align: left; font-family: 'Courier New', Courier, monospace; font-size: 0.85rem; min-height: 120px;}
+    .result-box { border-radius: 12px; padding: 25px; text-align: center; margin-top: 30px; }
+    .result-success { background: rgba(40, 167, 69, 0.05); border: 2px solid #28a745; color: #155724; }
+    .result-warning { background: rgba(255, 193, 7, 0.05); border: 2px solid #ffc107; color: #856404; }

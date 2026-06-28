@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+{% block content %}
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/jobs.css') }}">
+
+<div id="global-loader">
+    <div class="radar-container">
+        <div class="radar-sweep"></div>
+        <div class="radar-blip blip-1"></div>
+        <div class="radar-blip blip-2"></div>
+    </div>
+    <div class="loader-text" id="loader-message">FETCHING LIVE DATA...</div>
+</div>
+
+<div class="container py-4">
+    <div class="job-header d-flex justify-content-between align-items-end">
+        <div>
+            <h2 class="fw-bold text-white mb-1">JobFit Engine</h2>
+            <p class="text-muted mb-0"><i class="fas fa-satellite-dish text-success me-2"></i> Fetching real-time global opportunities.</p>
+        </div>
+        <span class="badge bg-primary-gradient px-3 py-2 rounded-pill shadow-sm" style="font-size: 14px;">{{ jobs|length }} Active Roles Found</span>
+    </div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }} rounded-3" style="background: rgba(99, 102, 241, 0.1); border: 1px solid #6366f1; color: #e0e7ff;">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <div class="row g-4" id="jobContainer">
+        {% for job in jobs %}
+        <div class="col-md-6 job-item" style="display: {% if loop.index > 6 %}none{% else %}block{% endif %};">
+            <div class="job-card d-flex flex-column">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <div class="company-logo rounded px-3 py-2 fw-bold border">{{ job.company[:2] | upper }}</div>
+                    <span class="badge-type">{{ job.type }}</span>
+                </div>
+                <h5 class="fw-bold mb-1 text-truncate text-white" title="{{ job.title }}">{{ job.title }}</h5>
+                <p class="text-muted mb-3 fw-bold">{{ job.company }}</p>
+                
+                <div class="text-muted small mb-4">
+                    <div class="mb-2"><i class="fas fa-map-marker-alt me-2" style="color: #ef4444;"></i>{{ job.location }}</div>
+                    <div class="mb-2"><i class="fas fa-money-bill-wave me-2" style="color: #10b981;"></i>{{ job.salary }}</div>
+                    <div><i class="far fa-clock me-2" style="color: #6366f1;"></i>Posted: {{ job.posted }}</div>
+                </div>
+
+                <div class="mt-auto d-flex justify-content-between align-items-center border-top pt-3" style="border-color: #374151 !important;">
+                    <a href="/job/{{ job.id }}" class="btn-view loader-trigger">View Details & Predict <i class="fas fa-arrow-right ms-1"></i></a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    {% if jobs|length > 6 %}
+    <div class="text-center mt-5">
+        <button id="loadMoreBtn" class="btn-load-more">
+            Load More Roles <i class="fas fa-sync-alt ms-2"></i>
+        </button>
+    </div>
+    {% endif %}
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        
+        // 1. LOAD MORE BUTTON LOGIC (Kept perfectly intact!)
+        const loadMoreBtn = document.getElementById('loadMoreBtn');
+        if(loadMoreBtn) {
+            loadMoreBtn.addEventListener('click', function() {
+                let hiddenJobs = document.querySelectorAll('.job-item[style*="display: none"]');
+                
+                for(let i = 0; i < 4 && i < hiddenJobs.length; i++) {
+                    hiddenJobs[i].style.display = 'block';
+                    hiddenJobs[i].animate([{opacity: 0, transform: 'translateY(10px)'}, {opacity: 1, transform: 'translateY(0)'}], {duration: 400});
+                }
+                
+                if(document.querySelectorAll('.job-item[style*="display: none"]').length === 0) {
+                    this.style.display = 'none';
+                }
+            });
+        }
+
+        // 2. THE CUSTOM RADAR LOADER LOGIC
+        const loader = document.getElementById("global-loader");
+        const message = document.getElementById("loader-message");
+        const triggers = document.querySelectorAll(".loader-trigger");
+
+        triggers.forEach(trigger => {
+            trigger.addEventListener("click", function(e) {
+                e.preventDefault(); 
+                loader.style.display = "flex"; 
+                
+                // Change text to sound like it's pulling specific job data
+                message.innerText = "ESTABLISHING SECURE CONNECTION...";
+                
+                setTimeout(() => { message.innerText = "RETRIEVING COMPANY METRICS..."; }, 600);
+                
+                let targetUrl = e.currentTarget.getAttribute("href");
+                setTimeout(() => { if(targetUrl) window.location.href = targetUrl; }, 1200);
+            });
+        });
+    });
+</script>
+
+{% endblock %}

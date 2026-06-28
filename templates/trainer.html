@@ -1,0 +1,365 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/trainer.css') }}">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+<style>
+    .paywall-modal .modal-content { background: #0b0f19; border: 1px solid #374151; border-radius: 20px; box-shadow: 0 25px 50px rgba(0,0,0,0.9); color: white; overflow: hidden; }
+    .paywall-header { background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(17, 24, 39, 0) 100%); padding: 30px; text-align: center; border-bottom: 1px solid #1f2937; position: relative; }
+    .paywall-badge { position: absolute; top: 20px; right: 20px; background: rgba(245, 158, 11, 0.1); color: #f59e0b; border: 1px solid #f59e0b; font-size: 12px; font-weight: bold; padding: 5px 10px; border-radius: 20px; }
+    
+    .pricing-card { background: #121826; border: 1px solid #1f2937; border-radius: 16px; padding: 25px; transition: 0.3s; height: 100%; position: relative; }
+    .pricing-card.pro { border-color: #6366f1; box-shadow: 0 10px 30px rgba(99,102,241,0.2), inset 0 0 20px rgba(99,102,241,0.05); transform: scale(1.02); }
+    .pricing-card.pro::before { content: 'MOST POPULAR'; position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: #6366f1; color: white; font-size: 10px; font-weight: bold; padding: 4px 12px; border-radius: 10px; }
+    
+    .price-text { font-size: 2.5rem; font-weight: 800; color: white; margin: 15px 0; }
+    .price-text span { font-size: 1rem; color: #9ca3af; font-weight: normal; }
+    
+    .feature-list { list-style: none; padding: 0; margin: 0 0 25px 0; text-align: left; }
+    .feature-list li { margin-bottom: 12px; font-size: 14px; color: #cbd5e1; }
+    .feature-list i { color: #10b981; margin-right: 10px; }
+    
+    .btn-pay { background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; width: 100%; transition: 0.3s; }
+    .btn-pay:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(99, 102, 241, 0.4); color: white;}
+</style>
+
+<div class="trainer-wrapper">
+    <div class="left-panel">
+        
+        {% if step == 'mode_select' %}
+            <div style="background: rgba(245, 158, 11, 0.1); color: #f59e0b; padding: 6px 12px; border-radius: 20px; font-size: 13px; font-weight: bold; display: inline-block; margin-bottom: 20px;">✨ Dual Engine System</div>
+            <h1 class="title-main" style="color: white;">How would you like to train today?</h1>
+            <p style="color: #cbd5e1; font-size: 17px; margin-bottom: 40px;">Choose a standard MCQ test to build fundamentals, or launch the Live Voice AI for a hyper-realistic interview simulation.</p>
+
+            <form method="POST" style="display: flex; gap: 15px; flex-direction: column;">
+                <button type="submit" name="mode" value="quiz" class="btn-primary" style="padding: 20px; font-size: 18px; text-align: left;">
+                    📝 Standard MCQ Module <br><span style="font-size: 13px; font-weight: normal; color: #e5e7eb;">Practice technical concepts with multiple choice.</span>
+                </button>
+                <button type="submit" name="mode" value="voice" class="btn-primary" style="padding: 20px; font-size: 18px; text-align: left; background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
+                    🎙️ Live Voice Interview <br><span style="font-size: 13px; font-weight: normal; color: #e5e7eb;">Talk to our 3D AI recruiter in real-time.</span>
+                </button>
+                
+                {% if session.get('is_pro') %}
+                    <button type="button" onclick="window.location.href='/premium_video'" class="btn-pro-video" style="padding: 20px; font-size: 18px; text-align: left; background: linear-gradient(135deg, #10b981 0%, #059669 100%); position: relative; overflow: hidden; border: 1px solid #34d399; color: white; border-radius: 8px; cursor: pointer; width: 100%; transition: 0.3s; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);">
+                        <div style="position: absolute; top: 15px; right: 20px; background: rgba(0,0,0,0.3); font-size: 11px; padding: 4px 10px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.2);"><i class="fas fa-check-circle me-1" style="color: #6ee7b7;"></i> UNLOCKED</div>
+                        📹 AI Video Vision Tracker <br><span style="font-size: 13px; font-weight: normal; color: #d1fae5;">Premium access granted. Click to enter the Pro Cockpit.</span>
+                    </button>
+                {% else %}
+                    <button type="button" class="btn-pro-video" data-bs-toggle="modal" data-bs-target="#paywallModal" style="padding: 20px; font-size: 18px; text-align: left; background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); position: relative; overflow: hidden; border: 1px solid #818cf8; color: white; border-radius: 8px; cursor: pointer; width: 100%; transition: 0.3s; box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);">
+                        <div style="position: absolute; top: 15px; right: 20px; background: rgba(0,0,0,0.3); font-size: 11px; padding: 4px 10px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.2);"><i class="fas fa-lock me-1" style="color: #fcd34d;"></i> PRO</div>
+                        📹 AI Video Vision Tracker <br><span style="font-size: 13px; font-weight: normal; color: #e0e7ff;">Computer vision tracks your eye contact & confidence.</span>
+                    </button>
+                {% endif %}
+            </form>
+
+        {% elif step == 'select_dept' %}
+            <h1 class="title-main" style="color: white;">Select MCQ Track</h1>
+            <form method="POST">
+                <label class="option-label" style="color: white;"><input type="radio" name="department_selection" value="DSA" required> 💻 Data Structures & Algorithms</label>
+                <label class="option-label" style="color: white;"><input type="radio" name="department_selection" value="CSE"> ⚙️ Core Computer Science</label>
+                <label class="option-label" style="color: white;"><input type="radio" name="department_selection" value="HR"> 🤝 Behavioral & HR</label>
+                <br>
+                <button type="submit" class="btn-primary">Start Assessment</button>
+            </form>
+
+        {% elif step == 'quiz' %}
+            <h2 style="color: #e5e7eb;">MCQ Problem</h2>
+            <div style="background-color: #1f2937 !important; color: #ffffff !important; padding: 20px; border-radius: 10px; margin-bottom: 30px; font-size: 17px; line-height: 1.6; border: 1px solid #4b5563;">{{ question.q }}</div>
+
+            <form method="POST">
+                <input type="hidden" name="question_text" value="{{ question.q }}">
+                <input type="hidden" name="correct_answer" value="{{ question.correct }}">
+                <input type="hidden" name="explanation" value="{{ question.feedback }}">
+                {% for opt in question.options %}
+                    <label class="option-label" style="color: white;"><input type="radio" name="user_answer" value="{{ opt }}" required> {{ opt }}</label>
+                {% endfor %}
+                <br><button type="submit" name="submit_answer" class="btn-primary" style="width: 100%;">Submit Analysis</button>
+            </form>
+
+        {% elif step == 'result' %}
+            <h2 style="color: #fff;">System Analysis</h2>
+            {% if feedback.status == 'correct' %}
+                <div style="background: rgba(16, 185, 129, 0.1); border-left: 5px solid #10b981; padding: 25px; border-radius: 8px; color: #a7f3d0; margin-bottom: 30px;">
+                    <strong>✅ Correct!</strong><br><br>{{ feedback.text }}
+                </div>
+            {% else %}
+                <div style="background: rgba(239, 68, 68, 0.1); border-left: 5px solid #ef4444; padding: 25px; border-radius: 8px; color: #fecaca; margin-bottom: 30px;">
+                    <strong>❌ Incorrect.</strong><br><br>{{ feedback.text }}
+                </div>
+            {% endif %}
+            <form method="POST" style="display: flex; gap: 15px;">
+                <button type="submit" name="next_question" class="btn-primary" style="flex: 1;">Next Question</button>
+                <button type="submit" name="finish_quiz" class="btn-primary" style="background: transparent; border: 2px solid #4b5563; color: #d1d5db; flex: 1;">End Test</button>
+            </form>
+
+        {% elif step == 'voice_start' %}
+            <h1 class="title-main" style="color: white;">Voice AI Simulator</h1>
+            <p style="color: #cbd5e1; font-size: 16px; margin-bottom: 30px;">You are about to enter a live simulation. Please ensure your microphone and speakers are enabled.</p>
+            <form method="POST">
+                <button type="submit" name="start_voice" class="btn-primary">Initialize Voice Interview</button>
+            </form>
+
+        {% elif step == 'voice_active' %}
+            <h2 style="color: #e5e7eb;">AI Question:</h2>
+            <div style="background-color: #1f2937 !important; color: #ffffff !important; padding: 20px; border-radius: 10px; margin-bottom: 20px; font-size: 18px; border: 1px solid #4b5563;" id="ai-question">{{ question.q }}</div>
+            
+            <form method="POST" id="voiceForm">
+                <input type="hidden" name="question_text" value="{{ question.q }}">
+                <input type="hidden" name="model_answer" id="hidden_feedback">
+                
+                <h4 style="color: #cbd5e1; margin-bottom: 10px;">Your Answer (Type or Speak):</h4>
+                <textarea name="user_text" id="transcriptArea" placeholder="Hold the red microphone button to speak, or type your answer here..." required></textarea>
+                
+                <div style="text-align: center; margin-bottom: 20px;">
+                    <button type="button" class="btn-mic" id="recordBtn" title="Hold to Speak">🎤</button>
+                    <div style="font-size: 12px; color: #9ca3af; margin-top: 10px;" id="mic-status">Hold to Record</div>
+                </div>
+
+                <button type="button" onclick="generateMockFeedback()" class="btn-primary" style="width: 100%;">Submit Voice Answer</button>
+                <button type="submit" name="voice_submit" id="realSubmit" style="display: none;"></button>
+            </form>
+
+        {% elif step == 'voice_feedback' %}
+            <h2 style="color: #fff;">Interviewer Feedback</h2>
+            <div style="background: rgba(99, 102, 241, 0.1); border-left: 5px solid #6366f1; padding: 25px; border-radius: 8px; color: #e0e7ff; margin-bottom: 30px; font-size: 16px; line-height: 1.6;" id="ai-feedback">
+                {{ feedback }}
+            </div>
+            <form method="POST" style="display: flex; gap: 15px;">
+                <button type="submit" name="next_voice" class="btn-primary" style="flex: 1;">Next Question</button>
+                <button type="submit" name="finish_quiz" class="btn-primary" style="background: transparent; border: 2px solid #4b5563; color: #d1d5db; flex: 1;">End Interview</button>
+            </form>
+            
+        {% elif step == 'summary' %}
+            <h1 class="title-main" style="color: white;">Assessment Complete</h1>
+            <div style="background-color: #1f2937; padding: 40px; border-radius: 12px; text-align: center; border: 1px solid #374151; box-shadow: inset 0 0 20px rgba(0,0,0,0.5);">
+                <h1 style="color: #10b981; font-size: 80px; margin: 0; text-shadow: 0 0 30px rgba(16, 185, 129, 0.4);">{{ score }} <span style="font-size: 35px; color: #6b7280;">/ {{ total }}</span></h1>
+                <p style="color: #cbd5e1; font-size: 18px; margin-top: 10px; letter-spacing: 1px; text-transform: uppercase;">Correct Answers</p>
+            </div>
+            <br><a href="/dashboard" class="btn-primary" style="text-decoration: none; display: inline-block; width: calc(100% - 60px); text-align: center;">Return to Dashboard</a>
+        {% endif %}
+    </div>
+
+    <div class="right-panel">
+        <div class="atom-container">
+            <div class="nucleus" id="ai-nucleus"></div>
+            <div class="electron-orbit orbit-1"><div class="electron"></div></div>
+            <div class="electron-orbit orbit-2"><div class="electron"></div></div>
+            <div class="electron-orbit orbit-3"><div class="electron"></div></div>
+        </div>
+
+        <div class="sound-waves" id="soundwaves">
+            <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
+        </div>
+
+        <div class="ai-status-text" id="ai-status" style="color: white;">
+            {% if step == 'voice_active' %} AI IS SPEAKING... {% else %} ENGINE STANDBY {% endif %}
+        </div>
+    </div>
+</div>
+
+<div class="modal fade paywall-modal" id="paywallModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="paywall-header">
+                <div class="paywall-badge"><i class="fas fa-star me-1"></i> Premium Feature</div>
+                <h3 class="fw-bold mb-2 text-white">Unlock PPSU Career+ Pro</h3>
+                <p class="mb-0" style="color: #cbd5e1;">Get 10x more interviews with our advanced AI tools.</p>
+            </div>
+            
+            <div class="modal-body p-4">
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <div class="pricing-card">
+                            <h5 class="fw-bold text-white">Basic Plan</h5>
+                            <div class="price-text text-white">₹0<span style="color: #9ca3af;"> / forever</span></div>
+                            <ul class="feature-list">
+                                <li><i class="fas fa-check"></i> Basic JobFit Engine Match</li>
+                                <li><i class="fas fa-check"></i> 1 Standard Resume Export</li>
+                                <li><i class="fas fa-check"></i> 3 Standard MCQ Tests</li>
+                                <li><i class="fas fa-times" style="color: #ef4444;"></i> <span style="color: #9ca3af;">No Computer Vision</span></li>
+                                <li><i class="fas fa-times" style="color: #ef4444;"></i> <span style="color: #9ca3af;">No Live Confidence Tracking</span></li>
+                            </ul>
+                            <button class="btn w-100" style="border: 1px solid #4b5563; color: #cbd5e1;" data-bs-dismiss="modal">Current Plan</button>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="pricing-card pro">
+                            <h5 class="fw-bold" style="color: #818cf8;">Pro Tier</h5>
+                            <div class="price-text text-white">₹499<span style="color: #9ca3af;"> / month</span></div>
+                            <ul class="feature-list">
+                                <li><i class="fas fa-check"></i> Unlimited JobFit Predictions</li>
+                                <li><i class="fas fa-check"></i> Premium Cyber Resume Templates</li>
+                                <li><i class="fas fa-video" style="color: #6366f1;"></i> <b style="color: #e0e7ff;">AI Video Emotion Analyzer</b></li>
+                                <li><i class="fas fa-eye" style="color: #6366f1;"></i> <b style="color: #e0e7ff;">Live Eye-Contact Tracking</b></li>
+                                <li><i class="fas fa-chart-pie" style="color: #6366f1;"></i> <b style="color: #e0e7ff;">Advanced Analytics</b></li>
+                            </ul>
+                            <button class="btn-pay" onclick="simulatePayment(this)">
+                                <i class="fas fa-lock me-2"></i> Upgrade Now
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // --- THE ABSOLUTE VOICE KILLER (WATCHDOG) ---
+    // This constantly checks if the AI is speaking while the user is navigating.
+    let voiceWatchdog = setInterval(() => {
+        if (window.location.pathname !== '/trainer' && window.location.pathname !== '/premium_video') {
+            if (window.speechSynthesis.speaking) {
+                window.speechSynthesis.cancel();
+                console.log("Watchdog caught the ghost voice and killed it!");
+                clearInterval(voiceWatchdog); // Stop the watchdog once it's done its job
+            }
+        }
+    }, 500);
+
+    // Force stop on any page unload event
+    window.addEventListener('pagehide', () => window.speechSynthesis.cancel());
+    window.addEventListener('unload', () => window.speechSynthesis.cancel());
+    window.onbeforeunload = () => window.speechSynthesis.cancel();
+
+    // 1. THE REAL RAZORPAY PAYMENT INTEGRATION
+    async function simulatePayment(btn) {
+        let originalText = btn.innerHTML;
+        btn.innerHTML = '<i class="fas fa-circle-notch fa-spin me-2"></i> Generating Secure Order...';
+        btn.disabled = true;
+
+        try {
+            const response = await fetch('/create_order', { method: 'POST' });
+            const data = await response.json();
+
+            if (data.error) {
+                alert("Error creating order: " + data.error);
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+                return;
+            }
+
+            var options = {
+                "key": "rzp_test_SYeAmsoNC4GG0r", 
+                "amount": data.amount, 
+                "currency": data.currency,
+                "name": "PPSU Career+",
+                "description": "Pro Tier Subscription",
+                "image": "https://i.imgur.com/8Q5g6lE.png",
+                "order_id": data.order_id, 
+                "handler": async function (response) {
+                    window.speechSynthesis.cancel(); // Stop voice on success
+                    await fetch('/upgrade_to_pro', { method: 'POST' });
+                    
+                    Swal.fire({
+                        title: 'Payment Successful!',
+                        html: `<p style="color: #ffffff;">Welcome to PPSU Career+ PRO</p>`,
+                        icon: 'success',
+                        background: '#121826', 
+                        color: '#ffffff',
+                        showConfirmButton: true,
+                        confirmButtonText: 'Access Pro Cockpit',
+                        confirmButtonColor: '#6366f1'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.href = '/premium_video';
+                        }
+                    });
+                },
+                "prefill": { "name": "MSc Student", "email": "student@ppsu.ac.in" },
+                "theme": { "color": "#6366f1" }
+            };
+
+            var rzp1 = new Razorpay(options);
+            rzp1.open();
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+
+        } catch (error) {
+            console.error("Error:", error);
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+        }
+    }
+
+    // 2. STANDARD MCQ/VOICE JAVASCRIPT
+    function speakText(text) {
+        // ALWAYS cancel existing speech before starting
+        window.speechSynthesis.cancel();
+
+        let soundwaves = document.getElementById('soundwaves');
+        let nucleus = document.getElementById('ai-nucleus');
+        let status = document.getElementById('ai-status');
+
+        if(soundwaves) soundwaves.classList.add('active');
+        if(nucleus) nucleus.style.boxShadow = "0 0 100px #f43f5e"; 
+        if(status) status.innerText = "AI IS SPEAKING...";
+
+        let utterance = new SpeechSynthesisUtterance(text);
+        utterance.rate = 1.0;
+        utterance.pitch = 1.1; 
+        
+        let voices = window.speechSynthesis.getVoices();
+        let femaleVoice = voices.find(v => v.name.includes('Female') || v.name.includes('Google UK English Female'));
+        if(femaleVoice) utterance.voice = femaleVoice;
+
+        utterance.onend = function() {
+            if(soundwaves) soundwaves.classList.remove('active');
+            if(nucleus) nucleus.style.boxShadow = "0 0 50px #6366f1, 0 0 100px #4f46e5"; 
+            if(status) status.innerText = "LISTENING TO CANDIDATE...";
+        };
+
+        window.speechSynthesis.speak(utterance);
+    }
+
+    window.onload = function() {
+        let questionEl = document.getElementById('ai-question');
+        let feedbackEl = document.getElementById('ai-feedback');
+        if(questionEl) speakText(questionEl.innerText);
+        if(feedbackEl) speakText(feedbackEl.innerText);
+    };
+
+    const recordBtn = document.getElementById('recordBtn');
+    const transcriptArea = document.getElementById('transcriptArea');
+    const micStatus = document.getElementById('mic-status');
+    
+    if (recordBtn && 'webkitSpeechRecognition' in window) {
+        const recognition = new webkitSpeechRecognition();
+        recognition.continuous = true;
+        recognition.interimResults = true;
+
+        recognition.onresult = function(event) {
+            let final_transcript = '';
+            for (let i = event.resultIndex; i < event.results.length; ++i) {
+                if (event.results[i].isFinal) final_transcript += event.results[i][0].transcript;
+            }
+            if (final_transcript) transcriptArea.value += final_transcript + ' ';
+        };
+
+        recordBtn.addEventListener('mousedown', function() {
+            recognition.start();
+            recordBtn.classList.add('recording-pulse');
+            micStatus.innerText = "Listening...";
+        });
+
+        recordBtn.addEventListener('mouseup', function() {
+            recognition.stop();
+            recordBtn.classList.remove('recording-pulse');
+            micStatus.innerText = "Hold to Record";
+        });
+    }
+
+    function generateMockFeedback() {
+        window.speechSynthesis.cancel(); // Stop voice on submit
+        let answer = document.getElementById('transcriptArea').value.toLowerCase();
+        let feedbackStr = answer.length < 20 ? "Your answer was brief." : "Excellent response!";
+        document.getElementById('hidden_feedback').value = feedbackStr;
+        document.getElementById('realSubmit').click();
+    }
+</script>
+
+{% endblock %}

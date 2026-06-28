@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Command Center | PPSU Career+</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin_dashboard.css') }}">      
+</head>
+<body>
+
+    <div id="global-loader">
+        <div class="admin-radar">
+            <div class="admin-core"></div>
+        </div>
+        <div class="loader-text" id="loader-message">AUTHENTICATING ADMIN...</div>
+    </div>
+
+    <div class="sidebar">
+        <div class="sidebar-brand">
+            <i class="fas fa-user-shield me-2" style="color: #6366f1;"></i>
+            PPSU Career<span style="color: #6366f1;">+</span>
+        </div>
+        <ul class="nav flex-column mt-4">
+            <li class="nav-item">
+                <a href="/admin_dashboard" class="nav-link active loader-trigger"><i class="fas fa-home me-3"></i> Dashboard</a>
+            </li>
+            <li class="nav-item">
+                <a href="/admin/user/" class="nav-link loader-trigger"><i class="fas fa-database me-3"></i> Database Editor</a>
+            </li>
+            <li class="nav-item" style="margin-top: 50px;">
+                <a href="/logout" class="nav-link loader-trigger" style="color: #ef4444;"><i class="fas fa-sign-out-alt me-3"></i> Secure Logout</a>
+            </li>
+        </ul>
+    </div>
+
+    <div class="main-content">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="fw-bold text-white mb-0">System Overview</h2>
+            <div class="text-muted small" style="background: #121826; padding: 8px 15px; border-radius: 20px; border: 1px solid #1f2937;">
+                <i class="fas fa-server me-2 text-success"></i> {{ total_students }} Records Detected
+            </div>
+        </div>
+        
+        <div class="row g-4 mb-5">
+            <div class="col-md-3">
+                <div class="stat-card bg-blue-grad">
+                    <h5>Total Students</h5>
+                    <h2>{{ total_students }}</h2>
+                    <i class="fas fa-users stat-icon-bg"></i>
+                </div>
+            </div>
+            
+            <div class="col-md-3">
+                <div class="stat-card bg-green-grad">
+                    <h5>Job Predictions</h5>
+                    <h2>{{ predictions_made }}</h2>
+                    <i class="fas fa-radar stat-icon-bg"></i>
+                </div>
+            </div>
+            
+            <div class="col-md-3">
+                <div class="stat-card bg-orange-grad">
+                    <h5>Resumes Built</h5>
+                    <h2>{{ resumes_built }}</h2>
+                    <i class="far fa-file-pdf stat-icon-bg"></i>
+                </div>
+            </div>
+            
+            <div class="col-md-3">
+                <div class="stat-card bg-red-grad">
+                    <h5>AI Tests Taken</h5>
+                    <h2>{{ tests_taken }}</h2>
+                    <i class="fas fa-laptop-code stat-icon-bg"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="card activity-card">
+            <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom">
+                <h5 class="fw-bold text-white mb-0"><i class="fas fa-terminal me-2" style="color: #6366f1;"></i>Live System Log</h5>
+                <span class="badge rounded-pill px-3 py-2" style="background: rgba(16, 185, 129, 0.1); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.3);">
+                    <i class="fas fa-circle me-1" style="font-size: 8px; vertical-align: middle; animation: pulse 1s infinite;"></i> Engine Online
+                </span>
+            </div>
+            
+            <div class="activity-feed mt-3">
+                
+                <h6 class="text-muted mb-3 text-uppercase fw-bold" style="font-size: 0.8rem; letter-spacing: 1px;">Recently Joined Students</h6>
+                {% if recent_users %}
+                    {% for user in recent_users %}
+                    <div class="d-flex align-items-start mb-3">
+                        <div class="activity-icon-wrapper bg-light-success me-3">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div>
+                            <p class="mb-0 fw-bold text-white">{{ user.fullname }} <span class="text-muted fw-normal">({{ user.department }})</span></p>
+                            <p class="text-muted small mb-0 mt-1">Status: 
+                                <span class="badge {% if user.placement_status == 'Placed' %}bg-success{% else %}bg-warning text-dark{% endif %}" style="font-size: 10px;">
+                                    {{ user.placement_status }}
+                                </span>
+                            </p>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <p class="text-muted small"><i class="fas fa-info-circle me-1"></i> Database Empty: No students registered yet.</p>
+                {% endif %}
+
+                <hr class="my-4">
+
+                <h6 class="text-muted mb-3 mt-4 text-uppercase fw-bold" style="font-size: 0.8rem; letter-spacing: 1px;">Recent AI Assessments</h6>
+                {% if recent_tests %}
+                    {% for test in recent_tests %}
+                    <div class="d-flex align-items-start mb-3">
+                        <div class="activity-icon-wrapper bg-light-primary me-3">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <div class="w-100">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <p class="mb-0 fw-bold text-white">{{ test.user.fullname }}</p>
+                                {% if test.score != None %}
+                                    <span class="badge" style="background: rgba(99, 102, 241, 0.2); color: #a5b4fc; border: 1px solid #6366f1;">Score: {{ test.score }}/{{ test.total_questions }}</span>
+                                {% else %}
+                                    <span class="badge" style="background: rgba(16, 185, 129, 0.2); color: #34d399; border: 1px solid #10b981;">Log Recorded</span>
+                                {% endif %}
+                            </div>
+                            <p class="text-muted small mb-0 mt-1">Module: <span style="color: #cbd5e1;">{{ test.test_type }}</span> | {{ test.date_taken.strftime('%d %b, %H:%M') }}</p>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <p class="text-muted small"><i class="fas fa-info-circle me-1"></i> Log Empty: No AI tests have been taken yet.</p>
+                {% endif %}
+
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const loader = document.getElementById("global-loader");
+            const message = document.getElementById("loader-message");
+            const triggers = document.querySelectorAll(".loader-trigger");
+
+            triggers.forEach(trigger => {
+                trigger.addEventListener("click", function(e) {
+                    if (this.getAttribute("target") === "_blank") return;
+                    e.preventDefault(); 
+                    
+                    loader.style.display = "flex"; 
+                    
+                    let targetUrl = this.getAttribute("href");
+                    
+                    // Change loader text based on where the admin is going
+                    if (targetUrl.includes("user")) {
+                        message.innerText = "QUERYING SQL DATABASE...";
+                    } else if (targetUrl.includes("logout")) {
+                        message.innerText = "TERMINATING SECURE SESSION...";
+                    } else {
+                        message.innerText = "ACCESSING CONTROL PANEL...";
+                    }
+                    
+                    setTimeout(() => { if(targetUrl) window.location.href = targetUrl; }, 800);
+                });
+            });
+        });
+    </script>
+</body>
+</html>

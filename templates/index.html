@@ -1,0 +1,276 @@
+{% extends "base.html" %}
+
+{% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+
+
+
+<div id="global-loader">
+    <div class="loader-ring"></div>
+    <div class="loader-text">INITIALIZING MODULE...</div>
+</div>
+
+<div id="heroCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-pause="false" data-bs-interval="3000">
+    
+    <canvas id="hero-canvas"></canvas>
+
+    <div class="carousel-indicators mb-4">
+        <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="0" class="active"></button>
+        <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="1"></button>
+        <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="2"></button>
+    </div>
+
+    <div class="carousel-inner">
+        <div class="carousel-item active hero-slide" style="background-image: url('{{ url_for('static', filename='images/hero_1.png') }}');">
+            <div class="hero-overlay"></div>
+            <div class="carousel-caption">
+                <h1 class="display-3 fw-bold text-white mb-3 text-shadow">PPSU Career+</h1>
+                <p class="lead text-light mb-4 text-shadow" style="font-size: 1.4rem;">Intelligent Placement Readiness & Recruitment Ecosystem</p>
+                <a href="/login" class="btn-glow loader-trigger">
+                    <i class="fas fa-sign-in-alt me-2"></i> Access Secure Portal
+                </a>
+            </div>
+        </div>
+        <div class="carousel-item hero-slide" style="background-image: url('{{ url_for('static', filename='images/hero_2.jpg') }}');">
+            <div class="hero-overlay"></div>
+            <div class="carousel-caption">
+                <h1 class="display-3 fw-bold text-white mb-3 text-shadow">AI-Powered Insights</h1>
+                <p class="lead text-light mb-4 text-shadow" style="font-size: 1.4rem;">Predict your placement success with Data Science.</p>
+                <a href="/login" class="btn-glow loader-trigger">
+                    <i class="fas fa-sign-in-alt me-2"></i> Access Secure Portal
+                </a>
+            </div>
+        </div>
+        <div class="carousel-item hero-slide" style="background-image: url('{{ url_for('static', filename='images/hero_3.jpg') }}');">
+            <div class="hero-overlay"></div>
+            <div class="carousel-caption">
+                <h1 class="display-3 fw-bold text-white mb-3 text-shadow">Top Recruiters</h1>
+                <p class="lead text-light mb-4 text-shadow" style="font-size: 1.4rem;">Connecting top talent with industry leaders.</p>
+                <a href="/login" class="btn-glow loader-trigger">
+                    <i class="fas fa-sign-in-alt me-2"></i> Access Secure Portal
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+    </button>
+</div>
+
+<div class="container mb-5" style="margin-top: -80px; position: relative; z-index: 5;">
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="feature-card-clean slide-from-left loader-trigger" data-href="/jobs">
+                <div class="feature-icon-wrapper"><i class="fas fa-brain"></i></div>
+                <h4 class="feature-title">JobFit Engine</h4>
+                <p class="feature-desc">An AI-powered prediction engine that aligns student skills with industry requirements to forecast placement success.</p>
+                <span class="feature-link">Initialize Engine <i class="fas fa-arrow-right ms-1"></i></span>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="feature-card-clean slide-from-bottom loader-trigger" data-href="/trainer">
+                <div class="feature-icon-wrapper"><i class="fas fa-file-alt"></i></div>
+                <h4 class="feature-title">AI Trainer</h4>
+                <p class="feature-desc">A hyper-realistic mock interview simulator featuring voice AI and live technical coding assessments.</p>
+                <span class="feature-link">Start Simulation <i class="fas fa-arrow-right ms-1"></i></span>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="feature-card-clean slide-from-right loader-trigger" data-href="/build_resume">
+                <div class="feature-icon-wrapper"><i class="fas fa-chart-line"></i></div>
+                <h4 class="feature-title">Resume Builder</h4>
+                <p class="feature-desc">An automated document compiler that uses AI to draft professional, interview-ready resumes in seconds.</p>
+                <span class="feature-link">Generate Document <i class="fas fa-arrow-right ms-1"></i></span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid py-5 position-relative" style="background-color: transparent;">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h6 class="fw-bold text-uppercase ls-2" style="color: #6366f1;">Our Partners</h6>
+            <h2 class="fw-bold text-white">Top Premium Recruiters</h2>
+            <div style="width: 80px; height: 4px; background: linear-gradient(90deg, #6366f1, #a5b4fc); margin: 20px auto; border-radius: 2px;"></div>
+        </div>
+        <div class="row g-4">
+            <div class="col-6 col-md-4 col-lg-3"><a href="https://www.tcs.com" target="_blank" class="text-decoration-none"><div class="company-card-modern"><h4 class="company-name">TCS</h4><div class="company-icon-box icon-tcs"><i class="fas fa-code"></i></div><p class="company-desc">IT services, consulting, and business solutions.</p></div></a></div>
+            <div class="col-6 col-md-4 col-lg-3"><a href="https://www.ril.com" target="_blank" class="text-decoration-none"><div class="company-card-modern"><h4 class="company-name">Reliance</h4><div class="company-icon-box icon-ril"><i class="fas fa-industry"></i></div><p class="company-desc">Driving growth across multiple global sectors.</p></div></a></div>
+            <div class="col-6 col-md-4 col-lg-3"><a href="https://www.upl-ltd.com" target="_blank" class="text-decoration-none"><div class="company-card-modern"><h4 class="company-name">UPL</h4><div class="company-icon-box icon-upl"><i class="fas fa-leaf"></i></div><p class="company-desc">Sustainable agriculture products & solutions.</p></div></a></div>
+            <div class="col-6 col-md-4 col-lg-3"><a href="https://www.kotak.com" target="_blank" class="text-decoration-none"><div class="company-card-modern"><h4 class="company-name">Kotak</h4><div class="company-icon-box icon-kotak"><i class="fas fa-university"></i></div><p class="company-desc">Leading banking and financial services group.</p></div></a></div>
+            <div class="col-6 col-md-4 col-lg-3"><a href="https://sunpharma.com" target="_blank" class="text-decoration-none"><div class="company-card-modern"><h4 class="company-name">Sun Pharma</h4><div class="company-icon-box icon-sun"><i class="fas fa-pills"></i></div><p class="company-desc">Global specialty generic pharmaceutical company.</p></div></a></div>
+            <div class="col-6 col-md-4 col-lg-3"><a href="https://www.asianpaints.com" target="_blank" class="text-decoration-none"><div class="company-card-modern"><h4 class="company-name">Asian Paints</h4><div class="company-icon-box icon-asian"><i class="fas fa-paint-roller"></i></div><p class="company-desc">India's leading paint company and industrial supplier.</p></div></a></div>
+            <div class="col-6 col-md-4 col-lg-3"><a href="https://www.njgroup.in" target="_blank" class="text-decoration-none"><div class="company-card-modern"><h4 class="company-name">NJ Group</h4><div class="company-icon-box icon-nj"><i class="fas fa-chart-line"></i></div><p class="company-desc">Technology-driven Indian financial services.</p></div></a></div>
+            <div class="col-6 col-md-4 col-lg-3"><a href="https://amiorganics.com" target="_blank" class="text-decoration-none"><div class="company-card-modern"><h4 class="company-name">Ami Organics</h4><div class="company-icon-box icon-ami"><i class="fas fa-flask"></i></div><p class="company-desc">Research-driven specialty chemicals manufacturer.</p></div></a></div>
+        </div>
+    </div>
+</div>
+
+<footer class="premium-footer">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="footer-brand mb-3"><i class="fas fa-graduation-cap me-2" style="color: #6366f1;"></i> PPSU Career+</div>
+                <p class="small mb-4" style="color: #9ca3af; line-height: 1.6;">P. P. Savani University is committed to shaping future leaders through world-class education and industry-aligned placement opportunities driven by Data Science.</p>
+                <div>
+                    <a href="#" class="social-circle"><i class="fab fa-facebook-f"></i></a><a href="#" class="social-circle"><i class="fab fa-twitter"></i></a><a href="#" class="social-circle"><i class="fab fa-linkedin-in"></i></a><a href="#" class="social-circle"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-6 mb-4">
+                <h5 class="text-white fw-bold mb-4">Quick Links</h5>
+                <ul class="list-unstyled">
+                    <li class="mb-3"><a href="/" class="footer-link"><i class="fas fa-angle-right me-2"></i> Home</a></li>
+                    <li class="mb-3"><a href="/login" class="footer-link"><i class="fas fa-angle-right me-2"></i> Student Login</a></li>
+                    <li class="mb-3"><a href="/jobs" class="footer-link"><i class="fas fa-angle-right me-2"></i> JobFit Engine</a></li>
+                </ul>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-4">
+                <h5 class="text-white fw-bold mb-4">Contact Us</h5>
+                <ul class="list-unstyled small" style="color: #9ca3af;">
+                    <li class="mb-3 d-flex"><i class="fas fa-map-marker-alt mt-1 me-3" style="color: #6366f1;"></i> <span>NH 8, GETCO, Near Biltech,<br>Dhamdod, Surat - 394125</span></li>
+                    <li class="mb-3 d-flex align-items-center"><i class="fas fa-phone me-3" style="color: #6366f1;"></i> <span>+91 98765 43210</span></li>
+                    <li class="mb-3 d-flex align-items-center"><i class="fas fa-envelope me-3" style="color: #6366f1;"></i> <span>placement@ppsu.ac.in</span></li>
+                </ul>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-4">
+                <h5 class="text-white fw-bold mb-4">Stay Updated</h5>
+                <p class="small mb-3" style="color: #9ca3af;">Subscribe to our newsletter for the latest placement drives and training news.</p>
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="Email Address" style="background: #1f2937; border: 1px solid #374151; color: white;">
+                    <button class="btn btn-primary" type="button" style="background-color: #6366f1; border: none;"><i class="fas fa-paper-plane text-white"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="footer-bottom text-center">
+        <small>&copy; 2026 P. P. Savani University. All Rights Reserved. | Built with <i class="fas fa-heart text-danger mx-1"></i> by Tamanna Parmar.</small>
+    </div>
+</footer>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        
+        // 1. FORCE BOOTSTRAP CAROUSEL AUTO-SLIDE
+        setInterval(function() {
+            var nextButton = document.querySelector('.carousel-control-next');
+            if(nextButton) nextButton.click();
+        }, 3000);
+
+        // 2. PAGE LOADER SCRIPT
+        const loader = document.getElementById("global-loader");
+        const triggers = document.querySelectorAll(".loader-trigger");
+
+        triggers.forEach(trigger => {
+            trigger.addEventListener("click", function(e) {
+                if (this.getAttribute("target") === "_blank") return;
+                e.preventDefault(); 
+                loader.style.display = "flex"; 
+                let targetUrl = e.currentTarget.getAttribute("href") || e.currentTarget.getAttribute("data-href");
+                setTimeout(() => { if(targetUrl) window.location.href = targetUrl; }, 800);
+            });
+        });
+
+        // 3. DATA CONSTELLATION SCRIPT (Vanilla JS Canvas)
+        const canvas = document.getElementById('hero-canvas');
+        const ctx = canvas.getContext('2d');
+        const heroSection = document.getElementById('heroCarousel');
+        
+        let width, height, particles;
+        let mouse = { x: null, y: null, radius: 150 };
+
+        function initCanvas() {
+            width = canvas.width = heroSection.offsetWidth;
+            height = canvas.height = heroSection.offsetHeight;
+            particles = [];
+            
+            let particleCount = (width * height) / 12000;
+            
+            for (let i = 0; i < particleCount; i++) {
+                particles.push({
+                    x: Math.random() * width,
+                    y: Math.random() * height,
+                    vx: (Math.random() - 0.5) * 1, 
+                    vy: (Math.random() - 0.5) * 1, 
+                    radius: Math.random() * 2 + 1
+                });
+            }
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            ctx.clearRect(0, 0, width, height);
+
+            for (let i = 0; i < particles.length; i++) {
+                let p = particles[i];
+                
+                p.x += p.vx;
+                p.y += p.vy;
+
+                if (p.x < 0 || p.x > width) p.vx *= -1;
+                if (p.y < 0 || p.y > height) p.vy *= -1;
+
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                ctx.fillStyle = 'rgba(99, 102, 241, 0.8)';
+                ctx.fill();
+
+                for (let j = i; j < particles.length; j++) {
+                    let p2 = particles[j];
+                    let dx = p.x - p2.x;
+                    let dy = p.y - p2.y;
+                    let distance = Math.sqrt(dx * dx + dy * dy);
+
+                    if (distance < 100) {
+                        ctx.beginPath();
+                        ctx.strokeStyle = `rgba(99, 102, 241, ${1 - distance/100})`;
+                        ctx.lineWidth = 0.5;
+                        ctx.moveTo(p.x, p.y);
+                        ctx.lineTo(p2.x, p2.y);
+                        ctx.stroke();
+                    }
+                }
+
+                if (mouse.x != null) {
+                    let dxMouse = p.x - mouse.x;
+                    let dyMouse = p.y - mouse.y;
+                    let distanceMouse = Math.sqrt(dxMouse*dxMouse + dyMouse*dyMouse);
+                    
+                    if (distanceMouse < mouse.radius) {
+                        ctx.beginPath();
+                        ctx.strokeStyle = `rgba(165, 180, 252, ${1 - distanceMouse/mouse.radius})`; 
+                        ctx.lineWidth = 1;
+                        ctx.moveTo(p.x, p.y);
+                        ctx.lineTo(mouse.x, mouse.y);
+                        ctx.stroke();
+                        
+                        p.x -= dxMouse * 0.01;
+                        p.y -= dyMouse * 0.01;
+                    }
+                }
+            }
+        }
+
+        window.addEventListener('resize', initCanvas);
+        
+        heroSection.addEventListener('mousemove', function(e) {
+            let rect = heroSection.getBoundingClientRect();
+            mouse.x = e.clientX - rect.left;
+            mouse.y = e.clientY - rect.top;
+        });
+
+        heroSection.addEventListener('mouseleave', function() {
+            mouse.x = null;
+            mouse.y = null;
+        });
+
+        initCanvas();
+        animate();
+    });
+</script>
+{% endblock %}

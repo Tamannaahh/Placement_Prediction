@@ -1,0 +1,189 @@
+
+    /* Force Poppins Font globally */
+    body, h1, h2, h3, h4, h5, h6, .navbar, .table, .btn, td, th {
+        font-family: 'Poppins', sans-serif !important;
+    }
+    
+    /* --- SPLIT SCREEN LAYOUT --- */
+    body {
+        margin: 0;
+        display: flex; 
+        height: 100vh;
+        overflow: hidden;
+        background-color: #0b0f19 !important; /* Deep Dark Background */
+        color: #e5e7eb !important;
+    }
+
+    /* --- 1. THE RECREATED SIDEBAR --- */
+    .admin-sidebar {
+        width: 260px;
+        background: #050811; 
+        color: white;
+        height: 100vh;
+        flex-shrink: 0;
+        display: flex;
+        flex-direction: column;
+        box-shadow: 4px 0 25px rgba(0,0,0,0.5);
+        border-right: 1px solid #1f2937;
+        z-index: 1000;
+    }
+    .admin-sidebar-header {
+        padding: 30px 20px;
+        text-align: center;
+        border-bottom: 1px solid #1f2937;
+    }
+    .admin-sidebar-header h3 {
+        color: white;
+        font-weight: 700;
+        margin: 15px 0 0 0;
+        font-size: 22px;
+    }
+    .admin-sidebar-header h3 span {
+        color: #6366f1; /* Glowing Indigo */
+    }
+    .admin-nav {
+        list-style: none;
+        padding: 20px 0;
+        margin: 0;
+    }
+    .admin-nav li {
+        padding: 0;
+    }
+    .admin-nav a {
+        display: block;
+        padding: 15px 25px;
+        color: #9ca3af;
+        text-decoration: none;
+        font-weight: 500;
+        transition: 0.3s;
+        border-left: 4px solid transparent;
+    }
+    .admin-nav a:hover, .admin-nav a.active {
+        background: rgba(99, 102, 241, 0.1);
+        color: #ffffff;
+        border-left: 4px solid #6366f1;
+    }
+    .admin-nav i {
+        width: 30px;
+    }
+
+    /* --- 2. MAIN DATABASE CONTENT AREA --- */
+    .admin-main-content {
+        flex-grow: 1;
+        overflow-y: auto;
+        padding: 20px;
+        background-color: #0b0f19;
+    }
+
+    /* --- HIDE THE BLANK "HOME" TAB --- */
+    .navbar-nav > li > a[href="/admin/"] {
+        display: none !important;
+    }
+
+    /* ========================================================= */
+    /* FLASK-ADMIN DEEP CSS OVERRIDES (THE MAGIC DARK MODE)      */
+    /* ========================================================= */
+    
+    /* Top Navbar */
+    .navbar-default {
+        background: #121826 !important;
+        border: 1px solid #1f2937 !important;
+        border-radius: 12px !important;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.3) !important;
+        margin-bottom: 25px;
+    }
+    .navbar-default .navbar-brand {
+        color: #ffffff !important;
+        font-weight: 700 !important;
+    }
+    .navbar-default .navbar-nav > li > a {
+        color: #9ca3af !important;
+        font-weight: 600 !important;
+    }
+    .navbar-default .navbar-nav > li > a:hover,
+    .navbar-default .navbar-nav > li.active > a {
+        color: #6366f1 !important;
+        background-color: transparent !important;
+    }
+
+    /* The Main Database Table Container */
+    .table-responsive {
+        background: #121826 !important;
+        border-radius: 12px !important;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.3) !important;
+        padding: 15px !important;
+        border: 1px solid #1f2937 !important;
+    }
+    
+    /* Table Headers */
+    .table > thead > tr > th {
+        background-color: #1f2937 !important;
+        color: #ffffff !important;
+        border-bottom: 2px solid #374151 !important;
+        padding: 15px !important;
+    }
+    
+    /* Table Rows & Text */
+    .table > tbody > tr > td {
+        border-top: 1px solid #374151 !important;
+        color: #cbd5e1 !important;
+        vertical-align: middle !important;
+    }
+    .table-striped > tbody > tr:nth-of-type(odd) {
+        background-color: rgba(255,255,255,0.02) !important;
+    }
+    .table-hover > tbody > tr:hover {
+        background-color: rgba(99, 102, 241, 0.1) !important;
+    }
+
+    /* Buttons (Create, Edit, Delete, Filters) */
+    .btn-primary, .btn-default { 
+        background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%) !important; 
+        color: white !important;
+        border: none !important; 
+        box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4) !important;
+        text-shadow: none !important;
+        transition: 0.3s !important;
+    }
+    .btn-primary:hover, .btn-default:hover { 
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(99, 102, 241, 0.6) !important; 
+        color: white !important;
+    }
+
+    /* Forms, Inputs, Search Bars inside Admin */
+    input.form-control, select.form-control, .select2-container .select2-choice {
+        background-color: #1f2937 !important;
+        color: white !important;
+        border: 1px solid #374151 !important;
+    }
+    input.form-control:focus, select.form-control:focus {
+        border-color: #6366f1 !important;
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25) !important;
+    }
+    
+    /* Pagination Controls */
+    .pagination > li > a, .pagination > li > span {
+        background-color: #1f2937 !important;
+        border-color: #374151 !important;
+        color: #cbd5e1 !important;
+    }
+    .pagination > .active > a, .pagination > .active > span {
+        background-color: #6366f1 !important;
+        border-color: #6366f1 !important;
+        color: white !important;
+    }
+
+    /* Minor Text Fixes */
+    .text-muted { color: #9ca3af !important; }
+    .nav-tabs > li > a { color: #9ca3af; }
+    .nav-tabs > li.active > a {
+        background-color: #1f2937 !important;
+        color: #fff !important;
+        border-color: #374151 #374151 transparent !important;
+    }
+    .nav-tabs { border-bottom-color: #374151 !important; }
+    .well {
+        background-color: #121826 !important;
+        border-color: #1f2937 !important;
+    }

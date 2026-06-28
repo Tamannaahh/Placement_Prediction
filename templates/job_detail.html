@@ -1,0 +1,158 @@
+{% extends "base.html" %}
+{% block content %}
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/job_detail.css') }}">
+
+
+<div id="global-loader">
+    <div class="loader-ring"></div>
+    <div class="loader-text" id="loader-message">INITIALIZING NEURAL NET...</div>
+</div>
+
+<div class="container py-4">
+    <a href="/jobs" class="back-link mb-4"><i class="fas fa-chevron-left me-2"></i> Back to Search</a>
+
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <div class="content-card mb-4">
+                <div class="d-flex align-items-center mb-4">
+                    <div class="company-badge rounded px-4 py-3 border me-3 fw-bold fs-4">{{ job.company[:2] | upper }}</div>
+                    <div>
+                        <h2 class="fw-bold mb-1 text-white">{{ job.title }}</h2>
+                        <div class="d-flex align-items-center">
+                            <span class="fs-5 me-3 text-muted"><i class="fas fa-building me-2"></i>{{ job.company }}</span>
+                            <span class="badge-type">{{ job.type }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-flex flex-wrap gap-4 text-muted small mb-5 border-bottom pb-4" style="border-color: #374151 !important;">
+                    <div><i class="fas fa-map-marker-alt me-2" style="color: #ef4444;"></i>{{ job.location }}</div>
+                    <div><i class="fas fa-money-bill-wave me-2" style="color: #10b981;"></i>{{ job.salary }}</div>
+                    <div><i class="far fa-clock me-2" style="color: #6366f1;"></i>Posted: {{ job.posted }}</div>
+                </div>
+
+                <h4 class="fw-bold mb-3 text-white">About the Role</h4>
+                <p class="desc-text mb-5">{{ job.description }}</p>
+
+                <h4 class="fw-bold mb-3 text-white">Live API Requirements</h4>
+                <ul class="text-muted mb-5" style="line-height: 2; list-style-type: none; padding-left: 0;">
+                    <li><i class="fas fa-graduation-cap text-success me-2"></i> Minimum Target: {{ job.cgpa_req }}</li>
+                    {% for req in job.reqs %}
+                        <li><i class="fas fa-star text-warning me-2"></i> {{ req }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            
+            {% if prediction_text %}
+                <div class="{% if result_class == 'success' %}result-success-box{% else %}result-warning-box{% endif %} mb-4 text-center">
+                    <h5 class="fw-bold text-muted mb-3">AI Fit Analysis</h5>
+                    <div class="big-percent {% if result_class == 'success' %}text-success{% else %}text-warning{% endif %}">
+                        {{ final_prob }}%
+                    </div>
+                    <p class="fw-bold text-white mb-1">{{ prediction_text }}</p>
+                    <p class="small mt-2 mb-0" style="color: #9ca3af;"><i class="fas fa-check-circle {% if result_class == 'success' %}text-success{% else %}text-warning{% endif %} me-1"></i> Profile analyzed against {{ job.company }} metrics.</p>
+                </div>
+            {% else %}
+                <div class="ai-card mb-4">
+                    <div class="d-flex align-items-center mb-3">
+                        <i class="fas fa-robot ai-icon me-2"></i>
+                        <h5 class="fw-bold mb-0 text-white">AI Fit Predictor</h5>
+                    </div>
+                    <p class="desc-text small mb-4">
+                        See your likelihood of being hired based on your current student profile. Our AI analysis engine will evaluate your skills, education, and experience against this specific job requirement.
+                    </p>
+                    <button class="btn-primary-custom" data-bs-toggle="modal" data-bs-target="#predictModal">
+                        Initialize Engine <i class="fas fa-arrow-right ms-2"></i>
+                    </button>
+                </div>
+            {% endif %}
+
+            <div class="content-card p-4">
+                <a href="{{ job.url }}" target="_blank" class="btn-apply text-center text-decoration-none d-block shadow-sm">
+                    Apply on Platform <i class="fas fa-external-link-alt ms-2 small"></i>
+                </a>
+                <a href="{{ job.url }}" target="_blank" class="btn text-center text-decoration-none d-block w-100 mt-2 fw-bold" style="background: transparent; color: #9ca3af; border: 1px solid #374151; transition: 0.3s;" onmouseover="this.style.color='white'; this.style.borderColor='#6366f1';" onmouseout="this.style.color='#9ca3af'; this.style.borderColor='#374151';">Company Website</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="predictModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content border-0 rounded-4 shadow-lg">
+            <div class="modal-header border-bottom-0 rounded-top-4 pb-0">
+                <h5 class="modal-title fw-bold text-white pt-2 px-2"><i class="fas fa-brain text-primary me-2"></i> Calibrate Engine for {{ job.company }}</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                
+                <form action="/predict_job/{{ job.id }}" method="POST" onsubmit="runPrediction(event)">
+                    <div class="row g-3">
+                        <div class="col-md-4"><label class="form-label small text-muted fw-bold">CGPA</label><input type="number" step="0.01" class="form-control" name="cgpa" required></div>
+                        <div class="col-md-4"><label class="form-label small text-muted fw-bold">12th / Diploma %</label><input type="number" step="0.01" class="form-control" name="diploma" required></div>
+                        <div class="col-md-4"><label class="form-label small text-muted fw-bold">Active Backlogs</label><input type="number" class="form-control" name="backlogs" value="0" required></div>
+                        
+                        <div class="col-md-4"><label class="form-label small text-muted fw-bold">Internships</label><input type="number" class="form-control" name="internships" required></div>
+                        <div class="col-md-4"><label class="form-label small text-muted fw-bold">Hackathons</label><input type="number" class="form-control" name="hackathons" value="0" required></div>
+                        
+                        <div class="col-md-6"><label class="form-label small text-muted fw-bold">Aptitude Score (0-100)</label><input type="number" class="form-control" name="aptitude" required></div>
+                        <div class="col-md-6"><label class="form-label small text-muted fw-bold">Technical Skill (1-10)</label><input type="number" class="form-control" name="technical" required></div>
+                    </div>
+                    <hr class="my-4" style="border-color: #374151;">
+                    <button type="submit" class="btn-primary-custom py-3 fs-5 shadow-sm">Run AI Analysis Server</button>
+                </form>
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // 1. UNIVERSAL PAGE LOADER
+    // Automatically attaches to ALL links on the page unless they open a new tab or trigger a modal
+    document.addEventListener("DOMContentLoaded", function() {
+        const loader = document.getElementById("global-loader");
+        const links = document.querySelectorAll('a:not([target="_blank"]):not([data-bs-toggle="modal"])');
+
+        links.forEach(link => {
+            link.addEventListener("click", function(e) {
+                // Ignore empty links
+                let targetUrl = this.getAttribute("href");
+                if (!targetUrl || targetUrl === "#") return;
+                
+                e.preventDefault(); 
+                loader.style.display = "flex"; 
+                document.getElementById('loader-message').innerText = "LOADING MODULE...";
+                
+                setTimeout(() => { window.location.href = targetUrl; }, 600);
+            });
+        });
+    });
+
+    // 2. THE AI PREDICTION ANIMATION
+    function runPrediction(event) {
+        event.preventDefault(); 
+        
+        var predictModal = bootstrap.Modal.getInstance(document.getElementById('predictModal'));
+        if(predictModal) predictModal.hide();
+
+        const loader = document.getElementById("global-loader");
+        const message = document.getElementById("loader-message");
+        loader.style.display = "flex";
+        
+        message.innerText = "CALIBRATING NEURAL NET...";
+        setTimeout(() => { message.innerText = "EVALUATING TECHNICAL SKILLS..."; }, 800);
+        setTimeout(() => { message.innerText = "CROSS-REFERENCING RECRUITER DATA..."; }, 1600);
+        setTimeout(() => { message.innerText = "CALCULATING FINAL PROBABILITY..."; }, 2400);
+
+        setTimeout(() => {
+            event.target.submit();
+        }, 3200);
+    }
+</script>
+
+{% endblock %}

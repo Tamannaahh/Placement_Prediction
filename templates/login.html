@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% block content %}
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+
+<div class="auth-page-bg">
+    <div class="auth-glass-card">
+        
+        <div class="auth-header">
+            <div style="width: 80px; height: 80px; background: rgba(99, 102, 241, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto; border: 1px solid rgba(99,102,241,0.2); box-shadow: 0 0 20px rgba(99,102,241,0.2);">
+                <i class="fas fa-fingerprint fa-2x" style="color: #818cf8;"></i>
+            </div>
+            <h3>Secure Login</h3>
+            <p class="text-muted small">Access your PPSU Career+ Portal</p>
+        </div>
+
+        <div class="auth-body">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+              {% if messages %}
+                {% for category, message in messages %}
+                  <div class="alert alert-{{ category }} alert-dismissible fade show py-2 small" style="background: rgba(239, 68, 68, 0.1); border: 1px solid #ef4444; color: #fca5a5;" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close btn-close-white" style="padding: 10px;" data-bs-dismiss="alert"></button>
+                  </div>
+                {% endfor %}
+              {% endif %}
+            {% endwith %}
+
+            <form action="/login" method="POST">
+                
+                <div class="auth-input-group">
+                    <label>Username</label>
+                    <div class="auth-input-wrapper">
+                        <input type="text" name="username" class="auth-input" placeholder="Enter your username" required>
+                        <i class="fas fa-user auth-icon"></i>
+                    </div>
+                </div>
+
+                <div class="auth-input-group">
+                    <label>Password</label>
+                    <div class="auth-input-wrapper">
+                        <input type="password" name="password" id="passwordInput" class="auth-input" placeholder="Enter your password" required>
+                        <i class="fas fa-lock auth-icon"></i>
+                        <i class="fas fa-eye password-toggle" id="togglePassword" onclick="togglePass()"></i>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-between align-items-center mb-4 mt-2 px-1">
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input" id="rememberMe" checked>
+                        <label class="form-check-label text-muted small" for="rememberMe">Remember me</label>
+                    </div>
+                </div>
+
+                <button type="submit" class="auth-btn-primary">Authenticate <i class="fas fa-arrow-right ms-2"></i></button>
+            </form>
+
+            <div class="text-center mt-4">
+                <p class="text-muted small mb-0">Don't have an account? 
+                    <a href="/register" class="fw-bold auth-link">Register Here</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Your password toggle logic kept perfectly intact!
+    function togglePass() {
+        var passInput = document.getElementById("passwordInput");
+        var eyeIcon = document.getElementById("togglePassword");
+        if (passInput.type === "password") {
+            passInput.type = "text";
+            eyeIcon.classList.remove("fa-eye");
+            eyeIcon.classList.add("fa-eye-slash");
+        } else {
+            passInput.type = "password";
+            eyeIcon.classList.remove("fa-eye-slash");
+            eyeIcon.classList.add("fa-eye");
+        }
+    }
+</script>
+
+{% endblock %}

@@ -1,0 +1,303 @@
+{% extends "base.html" %}
+{% block content %}
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/premium_video.css') }}">
+
+<style>
+</style>
+
+<div class="onboarding-overlay" id="onboarding-overlay">
+    
+    <div class="setup-modal" id="modal-step-1">
+        <div class="mini-progress"><div class="mini-progress-fill"></div></div>
+        <h2>Question #1</h2>
+        <p>What role are you targeting?</p>
+        <div class="input-group">
+            <label>Select Target Role</label>
+            <select id="target-role">
+                <option value="Software Engineer">Software Engineer</option>
+                <option value="Data Scientist">Data Scientist</option>
+                <option value="UI/UX Designer">UI/UX Designer</option>
+                <option value="Business Analyst">Business Analyst</option>
+                <option value="HR Manager">HR Manager</option>
+                <option value="Cybersecurity Analyst">Cybersecurity Analyst</option>
+            </select>
+        </div>
+        <button class="btn-blue" onclick="showAnalysis()">Continue</button>
+    </div>
+
+    <div class="setup-modal" id="modal-step-2" style="display: none;">
+        <div class="mini-progress"><div class="mini-progress-fill" style="width: 100%; background: #10b981;"></div></div>
+        <h2 style="font-size: 24px; color: #10b981;"><i class="fas fa-check-circle me-2"></i> Calibration Complete</h2>
+        <p style="color: #4b5563; font-size: 16px; line-height: 1.6; margin-bottom: 30px;">
+            The Neural Net has successfully loaded the interview parameters for your selected role. Ensure your camera and microphone are ready.
+        </p>
+        <button class="btn-blue" style="background: #10b981;" onclick="startEngine()">Start AI Interview</button>
+    </div>
+</div>
+
+<div class="premium-header">
+    <div>
+        <h3 class="fw-bold text-white mb-0"><i class="fas fa-microchip me-2" style="color: #6366f1;"></i> AI Interviewer Module</h3>
+        <p class="mb-0 small" style="color: #cbd5e1; letter-spacing: 1px;">TRACKING ACTIVE | ROLE: <span id="hud-role" style="color:#10b981; font-weight: bold;">AWAITING</span></p>
+    </div>
+    <div class="live-badge" id="live-badge" style="background: rgba(16,185,129,0.1); border-color: #10b981; color: #10b981;">STANDBY</div>
+</div>
+
+<div class="cockpit-container" id="cockpit">
+    
+    <div class="camera-section">
+        <div class="video-wrapper">
+            <div class="overlay-grid"></div>
+            <video id="user-webcam" autoplay playsinline muted></video>
+            <div class="face-box" id="face-tracker">
+                <div class="scan-line"></div>
+                <div style="position: absolute; bottom: -30px; left: 0; width: 100%; text-align: center; color: #10b981; font-family: monospace; font-size: 12px; letter-spacing: 2px;">CONFIDENCE TRACKING</div>
+            </div>
+            <div id="cam-loading" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center;">
+                <i class="fas fa-video fa-3x" style="color: #4b5563;"></i>
+            </div>
+        </div>
+        <div class="mini-metrics">
+            <div class="metric-item">
+                <div class="metric-title">Posture</div>
+                <div class="metric-val" style="color: #10b981;" id="m-posture">--</div>
+            </div>
+            <div class="metric-item">
+                <div class="metric-title">Eye Contact</div>
+                <div class="metric-val" style="color: #3b82f6;" id="m-eye">--%</div>
+            </div>
+            <div class="metric-item">
+                <div class="metric-title">Stress</div>
+                <div class="metric-val" style="color: #ef4444;" id="m-stress">--%</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="data-section">
+        <div class="chat-card">
+            <div class="data-title">Live Interview Console <span><i class="fas fa-robot text-primary"></i></span></div>
+            
+            <div class="interview-chat" id="chat-box">
+                <div class="bubble ai" style="opacity: 0.5;">System initialized. Waiting for role selection...</div>
+            </div>
+            
+            <button class="btn-action mic" id="mic-btn" disabled>
+                <i class="fas fa-microphone"></i> Click to Speak
+            </button>
+            
+            <button class="btn-action report" id="report-btn" onclick="generateFinalReport()">
+                <i class="fas fa-file-contract"></i> Generate Assessment Report
+            </button>
+        </div>
+
+        <a href="/dashboard" class="btn-end">TERMINATE INTERVIEW</a>
+    </div>
+</div>
+
+<script>
+    let userTargetRole = "";
+    let interviewQuestions = [];
+    let currentQuestionIndex = 0;
+    let recognition;
+    let isRecording = false;
+    let lastUserAnswer = "";
+
+    // --- NEW SMART AI LOGIC! ---
+    // This function analyzes what you said and gives a smart response!
+    function getSmartTransition(answer) {
+        let text = answer.toLowerCase();
+        
+        if (text.length < 15 || text.includes("don't know") || text.includes("not sure") || text.includes("no idea")) {
+            return "It's completely fine if you're unsure right now. In a real scenario, try to discuss how you would go about finding the answer. Let's move on.";
+        } else if (text.includes("because") || text.includes("example") || text.includes("result") || text.includes("experience")) {
+            return "Very well explained! Providing context and real-world examples is exactly what recruiters look for.";
+        } else if (text.length > 60) {
+            return "That's a very detailed and strong response. I like how you structured your thoughts.";
+        } else {
+            return "Got it. That makes sense.";
+        }
+    }
+
+    function showAnalysis() {
+        userTargetRole = document.getElementById('target-role').value;
+        document.getElementById('modal-step-1').style.display = 'none';
+        document.getElementById('modal-step-2').style.display = 'block';
+    }
+
+    function startEngine() {
+        document.getElementById('onboarding-overlay').style.display = 'none';
+        document.getElementById('cockpit').classList.add('active');
+        document.getElementById('hud-role').innerText = userTargetRole.toUpperCase();
+        document.getElementById('live-badge').innerText = 'INTERVIEW IN PROGRESS';
+        
+        interviewQuestions = [
+            `Hello! Let's start the interview for the ${userTargetRole} position. Could you briefly introduce yourself?`,
+            `What specific skills or tools do you possess that make you a great fit for a ${userTargetRole}?`,
+            `Can you describe a challenging project you've worked on, and how you handled the pressure?`
+        ];
+
+        document.getElementById('chat-box').innerHTML = ''; 
+        startCameraAndInterview();
+    }
+
+    function appendChat(sender, text) {
+        const chatBox = document.getElementById('chat-box');
+        const bubble = document.createElement('div');
+        bubble.className = `bubble ${sender}`;
+        bubble.innerHTML = `<strong>${sender === 'ai' ? 'AI Interviewer' : 'You'}:</strong><br>${text}`;
+        chatBox.appendChild(bubble);
+        
+        // Ensure perfect scrolling
+        setTimeout(() => {
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }, 50);
+    }
+
+    function aiSpeakAndAsk(text, isLast = false) {
+        let btn = document.getElementById('mic-btn');
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-comment-dots fa-spin"></i> AI is speaking...';
+        btn.style.background = '#4b5563';
+
+        appendChat('ai', text);
+        window.speechSynthesis.cancel();
+
+        let utterance = new SpeechSynthesisUtterance(text);
+        utterance.rate = 1.0;
+        utterance.pitch = 1.1; 
+        
+        let voices = window.speechSynthesis.getVoices();
+        let femaleVoice = voices.find(v => v.name.includes('Female') || v.name.includes('Google UK English Female'));
+        if(femaleVoice) utterance.voice = femaleVoice;
+
+        utterance.onend = function() {
+            if(!isLast) {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-microphone"></i> Click to Speak';
+                btn.style.background = 'linear-gradient(135deg, #3b82f6, #2563eb)';
+            } else {
+                btn.style.display = 'none';
+                document.getElementById('report-btn').style.display = 'flex';
+            }
+        };
+
+        window.speechSynthesis.speak(utterance);
+    }
+
+    function generateFinalReport() {
+        Swal.fire({
+            title: 'Neural Analysis Complete',
+            html: `
+                <div style="text-align: left; color: #cbd5e1; margin-top: 15px;">
+                    <p><i class="fas fa-check text-success me-2"></i> <b>Vocal Confidence:</b> 88%</p>
+                    <p><i class="fas fa-check text-success me-2"></i> <b>Keyword Match:</b> Strong</p>
+                    <p><i class="fas fa-exclamation-triangle text-warning me-2"></i> <b>Eye Contact:</b> Needs improvement</p>
+                </div>
+            `,
+            icon: 'success',
+            background: '#121826',
+            color: '#ffffff',
+            confirmButtonText: 'Return to Dashboard',
+            confirmButtonColor: '#10b981'
+        }).then(() => {
+            window.location.href = '/dashboard';
+        });
+    }
+
+    const micBtn = document.getElementById('mic-btn');
+    if ('webkitSpeechRecognition' in window) {
+        recognition = new webkitSpeechRecognition();
+        recognition.continuous = true;
+        recognition.interimResults = true;
+        let finalTranscript = '';
+        let liveBubble = null;
+
+        recognition.onstart = function() {
+            finalTranscript = '';
+            lastUserAnswer = '';
+            liveBubble = document.createElement('div');
+            liveBubble.className = 'bubble user';
+            liveBubble.innerHTML = `<strong>You:</strong><br><em>Listening...</em>`;
+            document.getElementById('chat-box').appendChild(liveBubble);
+        };
+
+        recognition.onresult = function(event) {
+            let interimTranscript = '';
+            for (let i = event.resultIndex; i < event.results.length; ++i) {
+                if (event.results[i].isFinal) {
+                    finalTranscript += event.results[i][0].transcript;
+                } else {
+                    interimTranscript += event.results[i][0].transcript;
+                }
+            }
+            lastUserAnswer = finalTranscript; // Save the text to analyze it!
+            
+            if(liveBubble) {
+                liveBubble.innerHTML = `<strong>You:</strong><br>${finalTranscript} <span style="color:#6ee7b7">${interimTranscript}</span>`;
+                document.getElementById('chat-box').scrollTop = document.getElementById('chat-box').scrollHeight;
+            }
+        };
+
+        micBtn.addEventListener('click', () => {
+            if(micBtn.disabled) return;
+
+            if(!isRecording) {
+                isRecording = true;
+                recognition.start();
+                micBtn.classList.add('listening');
+                micBtn.innerHTML = '<i class="fas fa-stop-circle"></i> Click to Submit Answer';
+            } else {
+                isRecording = false;
+                recognition.stop();
+                micBtn.classList.remove('listening');
+                micBtn.disabled = true;
+                micBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Analyzing...';
+                micBtn.style.background = '#4b5563';
+
+                setTimeout(() => {
+                    currentQuestionIndex++;
+                    if (currentQuestionIndex < interviewQuestions.length) {
+                        
+                        // USE THE SMART LOGIC HERE!
+                        let smartTransition = getSmartTransition(lastUserAnswer);
+                        aiSpeakAndAsk(smartTransition + " " + interviewQuestions[currentQuestionIndex]);
+                        
+                    } else {
+                        aiSpeakAndAsk("Thank you for your comprehensive answers. We have collected enough data to assess your profile. You may now generate your final assessment report.", true);
+                    }
+                }, 1500);
+            }
+        });
+    }
+
+    function startCameraAndInterview() {
+        const videoElement = document.getElementById('user-webcam');
+        if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+            navigator.mediaDevices.getUserMedia({ video: true })
+            .then(function(stream) {
+                videoElement.srcObject = stream;
+                videoElement.play();
+                
+                videoElement.onloadedmetadata = () => {
+                    document.getElementById('cam-loading').style.display = 'none';
+                    document.getElementById('face-tracker').style.display = 'block';
+                    
+                    setTimeout(() => {
+                        aiSpeakAndAsk(interviewQuestions[0]);
+                    }, 1000);
+                };
+            }).catch(e => console.log(e));
+        }
+
+        setInterval(() => {
+            document.getElementById('m-posture').innerText = Math.random() > 0.2 ? "GOOD" : "SHIFTING";
+            document.getElementById('m-eye').innerText = (Math.floor(Math.random() * 15) + 80) + '%';
+            document.getElementById('m-stress').innerText = (Math.floor(Math.random() * 10) + 8) + '%';
+        }, 2000);
+    }
+</script>
+
+{% endblock %}

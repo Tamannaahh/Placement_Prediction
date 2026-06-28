@@ -1,0 +1,56 @@
+{% extends 'admin/base.html' %}
+
+{% block head_css %}
+{{ super() }}
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/master.css') }}">
+
+{% endblock %}
+
+{% block page_body %}
+<div style="display: flex; width: 100vw; height: 100vh;">
+    
+    <div class="admin-sidebar">
+        <div class="admin-sidebar-header">
+            <i class="fas fa-user-shield fa-3x" style="color: #6366f1;"></i>
+            <h3>PPSU Career<span>+</span></h3>
+        </div>
+        <ul class="admin-nav">
+            <li><a href="/admin_dashboard"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+            <li><a href="/admin/user/" class="active"><i class="fas fa-database"></i> Database Editor</a></li>
+        </ul>
+        <ul class="admin-nav" style="margin-top: auto; border-top: 1px solid rgba(255,255,255,0.1);">
+            <li><a href="/logout" style="color: #ef4444;"><i class="fas fa-sign-out-alt"></i> Secure Logout</a></li>
+        </ul>
+    </div>
+
+    <div class="admin-main-content">
+        <div class="container" style="width: 100%; max-width: 1400px;">
+            
+            <nav class="navbar navbar-default" role="navigation">
+                <div class="navbar-header">
+                    {% block brand %}
+                    <a class="navbar-brand" href="#"><i class="fas fa-server me-2" style="color: #6366f1;"></i> {{ admin_view.admin.name }}</a>
+                    {% endblock %}
+                </div>
+                <div class="collapse navbar-collapse" id="admin-navbar-collapse">
+                    {% block main_menu %}
+                    <ul class="nav navbar-nav">
+                        {{ layout.menu() }}
+                    </ul>
+                    {% endblock %}
+                </div>
+            </nav>
+
+            {% block messages %}
+            {{ layout.messages() }}
+            {% endblock %}
+            
+            {% block body %}{% endblock %}
+            
+        </div>
+    </div>
+</div>
+{% endblock %}

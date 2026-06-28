@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+    /* GLOBAL DARK OVERRIDES */
+    body { background-color: #0b0f19 !important; font-family: 'Inter', 'Poppins', sans-serif; color: #e5e7eb; }
+    
+    .welcome-text { font-size: 2rem; font-weight: 800; color: #ffffff; letter-spacing: -0.5px; }
+    .text-muted { color: #9ca3af !important; }
+    
+    /* STAT CARDS */
+    .stat-card { 
+        background: #121826; border-radius: 16px; padding: 20px; border: 1px solid #1f2937; 
+        box-shadow: 0 10px 30px rgba(0,0,0,0.3); display: flex; justify-content: space-between; align-items: center; transition: 0.4s; 
+    }
+    .stat-card:hover { transform: translateY(-5px); border-color: #6366f1; box-shadow: 0 15px 30px rgba(0,0,0,0.5), inset 0 0 15px rgba(99,102,241,0.05); }
+    .stat-number { font-size: 2.2rem; font-weight: 800; color: #ffffff; line-height: 1; }
+    .stat-label { font-size: 0.85rem; font-weight: 600; color: #9ca3af; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px;}
+    .stat-icon { width: 55px; height: 55px; border-radius: 14px; display: flex; justify-content: center; align-items: center; font-size: 1.5rem; }
+    
+    /* NOTICE BOARD */
+    .notice-card { background: #121826; border-radius: 16px; padding: 25px; border: 1px solid #1f2937; box-shadow: 0 10px 30px rgba(0,0,0,0.3); height: 100%; }
+    .notice-item { 
+        border-left: 4px solid #f59e0b; padding: 15px; margin-bottom: 15px; 
+        background: rgba(31, 41, 55, 0.4); border-radius: 0 8px 8px 0; transition: 0.3s;
+    }
+    .notice-item:hover { background: rgba(31, 41, 55, 0.8); }
+    .notice-item.api-alert { border-left-color: #ef4444; background: rgba(239, 68, 68, 0.05); }
+    .notice-title { font-weight: 600; color: #ffffff; margin-bottom: 5px; font-size: 1.05rem; }
+    .notice-meta { font-size: 0.8rem; color: #6b7280; margin-top: 8px;}
+    .notice-link { color: #818cf8; transition: 0.2s; }
+    .notice-link:hover { color: #a5b4fc; }
+    
+    /* READINESS CARD */
+    .readiness-card { background: linear-gradient(135deg, #1e3a8a 0%, #4f46e5 100%); border-radius: 16px; padding: 25px; color: white; height: 100%; position: relative; overflow: hidden; border: 1px solid #374151; box-shadow: 0 15px 30px rgba(0,0,0,0.4); }
+    .progress-track { background: rgba(0,0,0,0.3); height: 8px; border-radius: 10px; margin: 15px 0 25px 0; overflow: hidden; box-shadow: inset 0 2px 4px rgba(0,0,0,0.5); }
+    .progress-fill { background: #10b981; height: 100%; border-radius: 10px; transition: width 1.5s ease-in-out; box-shadow: 0 0 10px #10b981; }
+    .check-list li { list-style: none; margin-bottom: 12px; font-size: 0.95rem; display: flex; align-items: center; color: #e0e7ff;}
+    .check-list i { margin-right: 12px; font-size: 1.2rem; }
+    
+    .btn-enhance { background: #f59e0b; color: white; border: none; width: 100%; padding: 12px; border-radius: 8px; font-weight: 600; margin-top: 15px; transition: 0.3s; box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);}
+    .btn-enhance:hover { background: #f59e0b; transform: translateY(-2px); box-shadow: 0 8px 20px rgba(245, 158, 11, 0.5); color: white;}
+    
+    .btn-danger-custom { background: transparent; border: 1px solid #ef4444; color: #ef4444; transition: 0.3s; }
+    .btn-danger-custom:hover { background: rgba(239, 68, 68, 0.1); color: #fca5a5; transform: translateY(-2px); }
+</style>
+
+<div class="container-fluid py-4 px-lg-5">
+    
+    <div class="d-flex justify-content-between align-items-start mb-5">
+        <div>
+            <h1 class="welcome-text mb-1">Welcome back, {{ user.fullname.split(' ')[0] if user.fullname else user.username }}! 👋</h1>
+            <p class="text-muted mb-0">Your career journey is progressing well. Here's your daily overview.</p>
+        </div>
+        <a href="/logout" class="btn btn-danger-custom fw-bold px-4 py-2" style="border-radius: 8px;">
+            <i class="fas fa-sign-out-alt me-2"></i> Logout
+        </a>
+    </div>
+
+    <div class="row g-4 mb-5">
+        <div class="col-md-3">
+            <div class="stat-card">
+                <div><div class="stat-label">Jobs Predicted</div><div class="stat-number">{{ jobs_predicted }}</div></div>
+                <div class="stat-icon" style="background: rgba(59, 130, 246, 0.15); color: #60a5fa;"><i class="fas fa-radar"></i></div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card">
+                <div><div class="stat-label">Tests Cleared</div><div class="stat-number">0</div></div>
+                <div class="stat-icon" style="background: rgba(34, 197, 94, 0.15); color: #4ade80;"><i class="fas fa-check-circle"></i></div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card">
+                <div><div class="stat-label">Skills Added</div><div class="stat-number">{{ user.languages.split(',')|length if user.languages else 0 }}</div></div>
+                <div class="stat-icon" style="background: rgba(249, 115, 22, 0.15); color: #fb923c;"><i class="fas fa-award"></i></div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card">
+                <div><div class="stat-label">Profile Score</div><div class="stat-number">{{ profile_score }}%</div></div>
+                <div class="stat-icon" style="background: rgba(139, 92, 246, 0.15); color: #a78bfa;"><i class="fas fa-chart-line"></i></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-md-8">
+            <div class="notice-card">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h5 class="fw-bold mb-0 text-white"><i class="far fa-bell text-warning me-2"></i> Placement Notice Board</h5>
+                    <a href="#" class="text-decoration-none small fw-bold notice-link">View All <i class="fas fa-external-link-alt ms-1"></i></a>
+                </div>
+                
+                {% for notice in notices %}
+                <div class="notice-item {% if notice.category == 'API Alert' %}api-alert{% endif %}">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <div class="notice-title">{{ notice.title }}</div>
+                        <span class="badge" style="background: #1f2937; border: 1px solid #374151; color: #a5b4fc; font-size: 0.7rem; padding: 5px 10px;">{{ notice.category | upper }}</span>
+                    </div>
+                    <div class="text-muted small mb-1" style="line-height: 1.5;">{{ notice.content[:100] }}...</div>
+                    <div class="notice-meta"><i class="far fa-clock me-1"></i> {{ notice.date_posted.strftime('%d %b %Y') }}</div>
+                </div>
+                {% else %}
+                <div class="text-center py-5 border rounded" style="border-color: #1f2937 !important; border-style: dashed !important;">
+                    <i class="far fa-folder-open mb-3" style="font-size: 3rem; color: #374151;"></i>
+                    <p class="text-muted mb-0">No new notices today.</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="readiness-card">
+                <i class="fas fa-certificate" style="position: absolute; right: -20px; top: -20px; font-size: 150px; color: rgba(255,255,255,0.05); transform: rotate(15deg);"></i>
+                
+                <h4 class="fw-bold mb-1 position-relative"><i class="fas fa-bolt text-warning me-2"></i> Profile Readiness</h4>
+                <p class="small mb-4 position-relative" style="color: #a5b4fc;">You've unlocked <strong class="text-warning">Gold Tier</strong> visibility.</p>
+                
+                <div class="d-flex justify-content-between align-items-end mb-1 position-relative">
+                    <span class="small fw-bold text-white">Completeness</span>
+                    <span class="fs-4 fw-bold text-white">{{ profile_score }}%</span>
+                </div>
+                
+                <div class="progress-track position-relative">
+                    <div class="progress-fill" style="width: {{ profile_score }}%;"></div>
+                </div>
+
+                <ul class="check-list p-0 position-relative">
+                    <li><i class="fas {% if user.cgpa %}fa-check-circle text-success{% else %}fa-circle text-white-50{% endif %}"></i> Academic details verified</li>
+                    <li><i class="fas {% if user.languages %}fa-check-circle text-success{% else %}fa-circle text-white-50{% endif %}"></i> Skills & Certifications added</li>
+                    <li><i class="fas {% if user.github %}fa-check-circle text-success{% else %}fa-circle text-white-50{% endif %}"></i> Github projects linked</li>
+                </ul>
+
+                <a href="/profile" class="btn btn-enhance d-block text-center mt-4 position-relative">Enhance with AI</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
