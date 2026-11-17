@@ -13,6 +13,7 @@ An AI-powered Placement Prediction and Management System designed to bridge the 
 * **Role-Based Access Control (RBAC):** Built with a unified user identity model separating Admin panels from Student dashboards smoothly.
 * **Secure Payment Integration:** Implements a professional "Pro Tier" system powered by secure Razorpay Checkout overlay workflows.
 
+* **Project Documentation:https://github.com/Tamannaahh/Placement_Prediction/blob/main/Project%20Report2.pdf 
 ---
 
 ## 🛠️ Technical Stack
